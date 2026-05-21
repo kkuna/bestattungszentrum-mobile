@@ -245,7 +245,7 @@ The mobile UI should feel operational, trustworthy, and calm. It should borrow t
 
 Recommended tokens:
 
-- Primary red: align final decision between `#8B0000`, backend `#8B1110`, and design-artifact `#B8312F`.
+- Primary red: `#B8312F`. This should become the app's canonical brand red across mobile UI, splash/app assets, and any web surface that needs to align visually with mobile.
 - Primary strong/accent: `#C8102E`.
 - Background: warm off-white, near `#F7F7F7` or `#F6F3F1`.
 - Surface: white or lightly warm white.
@@ -255,8 +255,9 @@ Recommended tokens:
 
 Typography:
 
-- The SDD recommends Inter, but the Ignite app currently ships Space Grotesk.
-- For MVP, either keep Space Grotesk to preserve template simplicity or switch to Inter/Noto Sans during token work.
+- Use Cormorant Garamond for brand/display moments: splash, empty states with brand presence, major screen titles where space allows, and selected marketing/onboarding headings.
+- Use a highly legible sans-serif for product UI, dense lists, form labels, buttons, tabs, helper text, and long German copy. Inter is the preferred default if its German glyph coverage is verified in the app build; Noto Sans is the fallback if we want broader language coverage with less risk.
+- Replace the current Ignite Space Grotesk default during theme work rather than mixing all three families.
 - German text length must be tested in buttons, tabs, cards, and empty states.
 
 Tone:
@@ -391,12 +392,10 @@ Must settle before or during mobile MVP:
 
 ## 18. Open Questions
 
-- Which red is final: SDD `#8B0000`, backend `#8B1110`, or logo artifact `#B8312F`?
-- Should MVP keep Space Grotesk or switch to Inter/Noto Sans for German B2B readability?
+- Confirm the exact font packages and weights to ship through Expo: Cormorant Garamond for display plus Inter or Noto Sans for UI.
 - Should supplier catalog editing exist in mobile v1, or stay backoffice/web-only?
 - Should quote response `ACCEPTED`/`REJECTED` be user-facing in mobile v1?
 - What is the attachment strategy for PDFs/images in RFQs and responses?
 - How should sole proprietors without Handelsregister entries complete signup?
 - What minimum profile data should `/api/mobile/auth/me` return versus a dedicated tenant profile endpoint?
 - Is request basket/bulk RFQ part of MVP, or should the app only support one supplier RFQ at a time?
-
