@@ -23,6 +23,7 @@ export const accountStatusSchema = z.enum([
   "SUSPENDED",
   "CLOSED",
 ])
+export const verificationStatusSchema = z.enum(["UNVERIFIED", "VERIFIED", "FAILED", "STALE"])
 export const quoteRequestStatusSchema = z.enum([
   "DRAFT",
   "SENT",
@@ -77,7 +78,10 @@ export const authUserSchema = z.object({
   id: z.string(),
   email: z.string().email(),
   role: userRoleSchema,
-  tenantId: z.string(),
+  tenantId: z.string().nullable().optional(),
+  accountStatus: accountStatusSchema.optional(),
+  verificationStatus: verificationStatusSchema.optional(),
+  userStatus: userStatusSchema.optional(),
 })
 
 export const authTokensSchema = z.object({

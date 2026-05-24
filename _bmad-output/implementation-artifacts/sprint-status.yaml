@@ -1,5 +1,5 @@
 # generated: 2026-05-23T20:59:07+0200
-# last_updated: 2026-05-24T17:08:21+0200
+# last_updated: 2026-05-24T19:55:19+0200
 # project: Bestattungszentrum
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: "2026-05-23T20:59:07+0200"
-last_updated: "2026-05-24T17:08:21+0200"
+last_updated: "2026-05-24T19:55:19+0200"
 project: Bestattungszentrum
 project_key: NOKEY
 tracking_system: file-system
@@ -46,10 +46,10 @@ development_status:
   1-1-starter-alignment-and-route-group-shell: done
   1-2-german-first-theme-and-i18n-baseline: done
   1-3-typed-api-dtos-and-normalized-api-result-boundary: done
-  1-4-session-storage-and-auth-api-integration: backlog
-  1-5-session-boot-refresh-and-logout-handling: backlog
-  1-6-role-gate-and-account-status-handling: backlog
-  1-7-role-specific-tabs-and-shared-settings-placeholders: backlog
+  1-4-session-storage-and-auth-api-integration: done
+  1-5-session-boot-refresh-and-logout-handling: done
+  1-6-role-gate-and-account-status-handling: review
+  1-7-role-specific-tabs-and-shared-settings-placeholders: review
   epic-1-retrospective: optional
   epic-2: backlog
   2-1-funeral-home-home-and-category-discovery-baseline: backlog

@@ -4,6 +4,22 @@ import * as ReactNative from "react-native"
 
 import mockFile from "./mockFile"
 
+const mockI18next = {
+  currentLocale: "de",
+  isInitialized: true,
+  language: "de",
+  changeLanguage: jest.fn(async (language: string) => {
+    mockI18next.language = language
+    return mockI18next
+  }),
+  t: (key: string, params: Record<string, string>) => {
+    return `${key} ${JSON.stringify(params)}`
+  },
+  translate: (key: string, params: Record<string, string>) => {
+    return `${key} ${JSON.stringify(params)}`
+  },
+}
+
 // libraries to mock
 jest.doMock("react-native", () => {
   // Extend ReactNative
@@ -25,15 +41,7 @@ jest.doMock("react-native", () => {
   )
 })
 
-jest.mock("i18next", () => ({
-  currentLocale: "en",
-  t: (key: string, params: Record<string, string>) => {
-    return `${key} ${JSON.stringify(params)}`
-  },
-  translate: (key: string, params: Record<string, string>) => {
-    return `${key} ${JSON.stringify(params)}`
-  },
-}))
+jest.mock("i18next", () => mockI18next)
 
 jest.mock("expo-localization", () => ({
   ...jest.requireActual("expo-localization"),
@@ -43,7 +51,7 @@ jest.mock("expo-localization", () => ({
 jest.mock("../src/i18n/index.ts", () => ({
   i18n: {
     isInitialized: true,
-    language: "en",
+    language: "de",
     t: (key: string, params: Record<string, string>) => {
       return `${key} ${JSON.stringify(params)}`
     },

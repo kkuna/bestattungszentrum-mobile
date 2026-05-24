@@ -27,6 +27,7 @@ import type {
   requestTimelineEventSchema,
   supplierItemSchema,
   supplierSchema,
+  verificationStatusSchema,
 } from "./schemas"
 
 type InferSchema<T extends z.ZodType> = z.infer<T>
@@ -89,6 +90,7 @@ export type AccountStatusDto =
   | "ACTIVE"
   | "SUSPENDED"
   | "CLOSED"
+export type VerificationStatusDto = InferSchema<typeof verificationStatusSchema>
 export type QuoteRequestStatusDto =
   | "DRAFT"
   | "SENT"

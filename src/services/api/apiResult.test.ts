@@ -38,6 +38,9 @@ const authTokenFixture = {
     email: "owner@example.com",
     role: "FUNERAL_HOME_USER",
     tenantId: "tenant-1",
+    accountStatus: "ACTIVE",
+    verificationStatus: "VERIFIED",
+    userStatus: "ACTIVE",
   },
 }
 
@@ -46,6 +49,9 @@ const currentUserFixture = {
   email: "owner@example.com",
   role: "FUNERAL_HOME_USER",
   tenantId: "tenant-1",
+  accountStatus: "ACTIVE",
+  verificationStatus: "VERIFIED",
+  userStatus: "ACTIVE",
   permissions: ["quote-requests:create"],
 }
 
@@ -336,6 +342,60 @@ describe("API DTO schemas", () => {
       attachments: [],
       supplier: supplierSchema.parse(supplierFixture),
     })
+  })
+
+  test("accepts current-user responses without account status until backend exposes it", () => {
+    expect(
+      currentUserSchema.parse({
+        id: "user-1",
+        email: "owner@example.com",
+        role: "FUNERAL_HOME_USER",
+        tenantId: "tenant-1",
+        permissions: [],
+      }),
+    ).toEqual({
+      id: "user-1",
+      email: "owner@example.com",
+      role: "FUNERAL_HOME_USER",
+      tenantId: "tenant-1",
+      permissions: [],
+    })
+  })
+
+  test("accepts tenantless back-office users so app route gates can fail closed", () => {
+    expect(
+      currentUserSchema.parse({
+        id: "user-admin",
+        email: "admin@example.com",
+        role: "ADMIN",
+        tenantId: null,
+        permissions: ["admin:read"],
+      }),
+    ).toEqual({
+      id: "user-admin",
+      email: "admin@example.com",
+      role: "ADMIN",
+      tenantId: null,
+      permissions: ["admin:read"],
+    })
+  })
+
+  test("rejects unchecked account status values at the API boundary", () => {
+    expect(
+      currentUserSchema.safeParse({
+        ...currentUserFixture,
+        accountStatus: "RAW_BACKEND_VALUE",
+      }).success,
+    ).toBe(false)
+  })
+
+  test("rejects unchecked verification status values at the API boundary", () => {
+    expect(
+      currentUserSchema.safeParse({
+        ...currentUserFixture,
+        verificationStatus: "RAW_BACKEND_VALUE",
+      }).success,
+    ).toBe(false)
   })
 
   test("defaulted quote request input fields are optional for API callers", () => {

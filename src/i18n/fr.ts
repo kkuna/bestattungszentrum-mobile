@@ -30,6 +30,7 @@ const fr: Translations = {
   auth: en.auth,
   funeralHome: en.funeralHome,
   supplier: en.supplier,
+  accountStatus: en.accountStatus,
   shared: en.shared,
 }
 
