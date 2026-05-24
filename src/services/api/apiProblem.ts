@@ -1,74 +1,106 @@
-import { ApiResponse } from "apisauce"
+import type { ApiResponse } from "apisauce"
 
-export type GeneralApiProblem =
-  /**
-   * Times up.
-   */
-  | { kind: "timeout"; temporary: true }
-  /**
-   * Cannot connect to the server for some reason.
-   */
-  | { kind: "cannot-connect"; temporary: true }
-  /**
-   * The server experienced a problem. Any 5xx error.
-   */
-  | { kind: "server" }
-  /**
-   * We're not allowed because we haven't identified ourself. This is 401.
-   */
-  | { kind: "unauthorized" }
-  /**
-   * We don't have access to perform that request. This is 403.
-   */
-  | { kind: "forbidden" }
-  /**
-   * Unable to find that resource.  This is a 404.
-   */
-  | { kind: "not-found" }
-  /**
-   * All other 4xx series errors.
-   */
-  | { kind: "rejected" }
-  /**
-   * Something truly unexpected happened. Most likely can try again. This is a catch all.
-   */
-  | { kind: "unknown"; temporary: true }
-  /**
-   * The data we received is not in the expected format.
-   */
-  | { kind: "bad-data" }
+import { backendErrorEnvelopeSchema } from "./schemas"
+import type { ApiFailure, ApiProblem } from "./types"
 
-/**
- * Attempts to get a common cause of problems from an api response.
- *
- * @param response The api response.
- */
-export function getGeneralApiProblem(response: ApiResponse<any>): GeneralApiProblem | null {
+export type ApiProblemOptions = {
+  forbiddenMeansAuth?: boolean
+}
+
+const apiProblemMessageKeys = {
+  "network": "api:error.network",
+  "timeout": "api:error.timeout",
+  "server": "api:error.server",
+  "auth": "api:error.auth",
+  "access-denied": "api:error.accessDenied",
+  "not-found": "api:error.notFound",
+  "validation": "api:error.validation",
+  "bad-data": "api:error.badData",
+  "cancelled": "api:error.cancelled",
+  "unknown": "api:error.unknown",
+} as const
+
+export function getMessageKeyForProblem(problem: ApiProblem): ApiFailure["messageKey"] {
+  return apiProblemMessageKeys[problem]
+}
+
+export function failureForProblem(
+  problem: ApiProblem,
+  status?: number,
+  details?: unknown,
+): ApiFailure {
+  return {
+    ok: false,
+    problem,
+    ...(status === undefined ? {} : { status }),
+    messageKey: getMessageKeyForProblem(problem),
+    ...(details === undefined ? {} : { details }),
+  }
+}
+
+export function mapApiFailure(
+  response: ApiResponse<unknown>,
+  options: ApiProblemOptions = {},
+): ApiFailure {
+  const backendError = backendErrorEnvelopeSchema.safeParse(response.data)
+  const details = backendError.success ? backendError.data.error : undefined
+  const backendCode = backendError.success ? backendError.data.error.code : undefined
+
+  if (backendCode === "VALIDATION_ERROR") {
+    return failureForProblem("validation", response.status, details)
+  }
+
+  if (backendCode === "UNAUTHORIZED") {
+    return failureForProblem("auth", response.status, details)
+  }
+
+  if (backendCode === "FORBIDDEN") {
+    return failureForProblem(
+      options.forbiddenMeansAuth ? "auth" : "access-denied",
+      response.status,
+      details,
+    )
+  }
+
   switch (response.problem) {
     case "CONNECTION_ERROR":
-      return { kind: "cannot-connect", temporary: true }
     case "NETWORK_ERROR":
-      return { kind: "cannot-connect", temporary: true }
+      return failureForProblem("network", response.status, details)
     case "TIMEOUT_ERROR":
-      return { kind: "timeout", temporary: true }
+      return failureForProblem("timeout", response.status, details)
     case "SERVER_ERROR":
-      return { kind: "server" }
+      return failureForProblem("server", response.status, details)
     case "UNKNOWN_ERROR":
-      return { kind: "unknown", temporary: true }
+      return failureForProblem("unknown", response.status, details)
+    case "CANCEL_ERROR":
+      return failureForProblem("cancelled", response.status, details)
     case "CLIENT_ERROR":
       switch (response.status) {
         case 401:
-          return { kind: "unauthorized" }
+          return failureForProblem("auth", response.status, details)
         case 403:
-          return { kind: "forbidden" }
+          return failureForProblem(
+            options.forbiddenMeansAuth ? "auth" : "access-denied",
+            response.status,
+            details,
+          )
         case 404:
-          return { kind: "not-found" }
+          return failureForProblem("not-found", response.status, details)
+        case 400:
+        case 422:
+          return failureForProblem("validation", response.status, details)
         default:
-          return { kind: "rejected" }
+          return failureForProblem("unknown", response.status, details)
       }
-    case "CANCEL_ERROR":
-      return null
+    default:
+      return failureForProblem("unknown", response.status, details)
   }
+}
 
-  return null
+export function validationFailure(details: unknown): ApiFailure {
+  return failureForProblem("validation", undefined, details)
+}
+
+export function badDataFailure(status: number | undefined, details: unknown): ApiFailure {
+  return failureForProblem("bad-data", status, details)
 }

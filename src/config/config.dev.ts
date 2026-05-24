@@ -6,5 +6,6 @@
  * https://reactnative.dev/docs/security#storing-sensitive-info
  */
 export default {
-  API_URL: "https://api.rss2json.com/v1/",
+  // Android emulator may need http://10.0.2.2:3000; iOS simulator can usually use localhost.
+  API_URL: "http://localhost:3000",
 }

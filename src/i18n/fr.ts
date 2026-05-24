@@ -1,4 +1,4 @@
-import { Translations } from "./en"
+import en, { Translations } from "./en"
 
 const fr: Translations = {
   common: {
@@ -26,6 +26,11 @@ const fr: Translations = {
       button: "Essayons à nouveau",
     },
   },
+  api: en.api,
+  auth: en.auth,
+  funeralHome: en.funeralHome,
+  supplier: en.supplier,
+  shared: en.shared,
 }
 
 export default fr

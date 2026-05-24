@@ -7,35 +7,62 @@ import type { Locale } from "date-fns/locale"
 import { parseISO } from "date-fns/parseISO"
 import i18n from "i18next"
 
+import { defaultLocale, getPrimaryLanguageTag } from "@/i18n/locale"
+
 type Options = Parameters<typeof format>[2]
 
 let dateFnsLocale: Locale
-export const loadDateFnsLocale = () => {
-  const primaryTag = i18n.language.split("-")[0]
+
+export const resolveDateFnsLocaleName = (languageTag = i18n.language) => {
+  const primaryTag = getPrimaryLanguageTag(languageTag ?? defaultLocale)
+
   switch (primaryTag) {
+    case "de":
+      return "de"
     case "en":
-      dateFnsLocale = require("date-fns/locale/en-US").default
+      return "en-US"
+    case "ar":
+      return "ar"
+    case "ko":
+      return "ko"
+    case "es":
+      return "es"
+    case "fr":
+      return "fr"
+    case "hi":
+      return "hi"
+    case "ja":
+      return "ja"
+    default:
+      return defaultLocale
+  }
+}
+
+export const loadDateFnsLocale = () => {
+  switch (resolveDateFnsLocaleName()) {
+    case "de":
+      dateFnsLocale = require("date-fns/locale/de").de
+      break
+    case "en-US":
+      dateFnsLocale = require("date-fns/locale/en-US").enUS
       break
     case "ar":
-      dateFnsLocale = require("date-fns/locale/ar").default
+      dateFnsLocale = require("date-fns/locale/ar").ar
       break
     case "ko":
-      dateFnsLocale = require("date-fns/locale/ko").default
+      dateFnsLocale = require("date-fns/locale/ko").ko
       break
     case "es":
-      dateFnsLocale = require("date-fns/locale/es").default
+      dateFnsLocale = require("date-fns/locale/es").es
       break
     case "fr":
-      dateFnsLocale = require("date-fns/locale/fr").default
+      dateFnsLocale = require("date-fns/locale/fr").fr
       break
     case "hi":
-      dateFnsLocale = require("date-fns/locale/hi").default
+      dateFnsLocale = require("date-fns/locale/hi").hi
       break
     case "ja":
-      dateFnsLocale = require("date-fns/locale/ja").default
-      break
-    default:
-      dateFnsLocale = require("date-fns/locale/en-US").default
+      dateFnsLocale = require("date-fns/locale/ja").ja
       break
   }
 }

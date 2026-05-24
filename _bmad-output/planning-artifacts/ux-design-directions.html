@@ -1,0 +1,876 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bestattungszentrum UX Design Directions</title>
+  <style>
+    :root {
+      --red: #B8312F;
+      --red-deep: #8E2422;
+      --red-bright: #C8102E;
+      --ink: #1A1614;
+      --ink-soft: #3A3330;
+      --paper: #F5F1EC;
+      --paper-cool: #F7F7F7;
+      --surface: #FFFFFF;
+      --rule: #D8D1C5;
+      --muted: #746D68;
+      --success: #2E7D32;
+      --warning: #B26A00;
+      --danger: #A32626;
+      --blue: #245B73;
+      --violet: #5A4A69;
+      --shadow: 0 18px 55px rgba(26, 22, 20, 0.16);
+      --font-ui: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-display: Georgia, "Times New Roman", serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: #211d1a;
+      color: var(--ink);
+      font-family: var(--font-ui);
+      line-height: 1.45;
+    }
+
+    .deck-header {
+      min-height: 78vh;
+      padding: 56px clamp(20px, 5vw, 72px) 40px;
+      background:
+        linear-gradient(90deg, rgba(184,49,47,0.96), rgba(142,36,34,0.92)),
+        radial-gradient(circle at 82% 18%, rgba(255,255,255,0.22), transparent 28%);
+      color: var(--paper);
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 42px;
+      align-items: end;
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.78;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(56px, 9vw, 126px);
+      font-weight: 500;
+      letter-spacing: 0;
+      line-height: 0.92;
+      margin: 0;
+      max-width: 860px;
+    }
+
+    .deck-header p {
+      max-width: 620px;
+      margin: 22px 0 0;
+      color: rgba(245,241,236,0.84);
+      font-size: 18px;
+    }
+
+    .legend {
+      background: rgba(255,255,255,0.11);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .legend h2 {
+      margin: 0 0 14px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .legend-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .legend-row {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 10px;
+      align-items: start;
+      font-size: 14px;
+      color: rgba(245,241,236,0.82);
+    }
+
+    .num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: inline-grid;
+      place-items: center;
+      background: rgba(245,241,236,0.18);
+      color: var(--paper);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .nav-strip {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 12px clamp(16px, 4vw, 48px);
+      background: rgba(26, 22, 20, 0.92);
+      border-bottom: 1px solid rgba(245,241,236,0.12);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav-strip a {
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+      color: var(--paper);
+      text-decoration: none;
+      border: 1px solid rgba(245,241,236,0.18);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 13px;
+    }
+
+    .nav-strip a:hover { background: rgba(245,241,236,0.1); }
+
+    main {
+      background: var(--paper);
+    }
+
+    .direction {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(290px, 0.72fr) minmax(330px, 1fr);
+      gap: clamp(22px, 4vw, 64px);
+      padding: clamp(36px, 6vw, 86px) clamp(18px, 5vw, 72px);
+      border-bottom: 1px solid var(--rule);
+      align-items: center;
+    }
+
+    .direction:nth-child(even) { background: #fffaf5; }
+    .direction.dark { background: #181514; color: var(--paper); }
+
+    .direction-copy h2 {
+      font-family: var(--font-display);
+      font-size: clamp(34px, 4.8vw, 68px);
+      font-weight: 500;
+      line-height: 0.96;
+      margin: 8px 0 18px;
+      letter-spacing: 0;
+    }
+
+    .direction-copy p {
+      color: var(--ink-soft);
+      max-width: 560px;
+      margin: 0 0 22px;
+      font-size: 16px;
+    }
+
+    .dark .direction-copy p { color: rgba(245,241,236,0.74); }
+
+    .fit-list {
+      display: grid;
+      gap: 10px;
+      margin: 22px 0 0;
+      padding: 0;
+      list-style: none;
+      max-width: 560px;
+    }
+
+    .fit-list li {
+      padding: 11px 13px;
+      background: rgba(255,255,255,0.58);
+      border: 1px solid rgba(216,209,197,0.82);
+      border-radius: 8px;
+      color: var(--ink-soft);
+      font-size: 14px;
+    }
+
+    .dark .fit-list li {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(245,241,236,0.12);
+      color: rgba(245,241,236,0.78);
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .tag {
+      border-radius: 999px;
+      border: 1px solid var(--rule);
+      background: rgba(255,255,255,0.7);
+      min-height: 32px;
+      padding: 7px 11px;
+      font-size: 12px;
+      color: var(--ink-soft);
+    }
+
+    .dark .tag {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(245,241,236,0.16);
+      color: rgba(245,241,236,0.78);
+    }
+
+    .mockup-area {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .phone {
+      width: min(100%, 342px);
+      height: 704px;
+      border-radius: 34px;
+      padding: 12px;
+      background: #0e0d0c;
+      box-shadow: var(--shadow);
+    }
+
+    .screen {
+      height: 100%;
+      border-radius: 25px;
+      overflow: hidden;
+      background: var(--paper-cool);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .statusbar {
+      height: 28px;
+      padding: 8px 18px 0;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: currentColor;
+      opacity: 0.72;
+    }
+
+    .appbar {
+      min-height: 68px;
+      padding: 10px 18px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--red);
+      color: white;
+    }
+
+    .appbar .brand {
+      font-family: var(--font-display);
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .appbar .role {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.82;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.3);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+    }
+
+    .content {
+      flex: 1;
+      overflow: hidden;
+      padding: 16px;
+    }
+
+    .screen h3 {
+      margin: 0 0 8px;
+      font-size: 20px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .screen .sub {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .search {
+      min-height: 46px;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      background: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .chip {
+      min-height: 34px;
+      border-radius: 999px;
+      border: 1px solid var(--rule);
+      background: white;
+      padding: 8px 12px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .chip.active {
+      background: var(--red);
+      color: white;
+      border-color: var(--red);
+    }
+
+    .card {
+      border: 1px solid var(--rule);
+      background: white;
+      border-radius: 8px;
+      padding: 13px;
+      margin-bottom: 10px;
+    }
+
+    .card-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .logo-box {
+      width: 46px;
+      height: 46px;
+      border-radius: 8px;
+      background: var(--paper);
+      display: grid;
+      place-items: center;
+      color: var(--red);
+      font-family: var(--font-display);
+      font-size: 24px;
+      flex: 0 0 auto;
+    }
+
+    .meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 7px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border-radius: 999px;
+      padding: 4px 8px;
+      background: #F2E8E6;
+      color: var(--red-deep);
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    .badge.green { background: #E8F3EA; color: var(--success); }
+    .badge.amber { background: #FFF3D8; color: var(--warning); }
+    .badge.blue { background: #E5F1F5; color: var(--blue); }
+
+    .button {
+      min-height: 44px;
+      border-radius: 8px;
+      background: var(--red);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 13px;
+      margin-top: 12px;
+    }
+
+    .button.secondary {
+      background: white;
+      color: var(--red);
+      border: 1px solid var(--red);
+    }
+
+    .tabs {
+      height: 58px;
+      background: white;
+      border-top: 1px solid var(--rule);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: center;
+    }
+
+    .tab {
+      display: grid;
+      place-items: center;
+      gap: 3px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .tab::before {
+      content: "";
+      width: 22px;
+      height: 4px;
+      border-radius: 999px;
+      background: transparent;
+    }
+
+    .tab.active {
+      color: var(--red);
+      font-weight: 750;
+    }
+
+    .tab.active::before { background: var(--red); }
+
+    .progress {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin: 10px 0 18px;
+    }
+
+    .progress span {
+      height: 4px;
+      border-radius: 999px;
+      background: #E2DAD0;
+    }
+
+    .progress span.done { background: var(--red); }
+
+    .field {
+      border: 1px solid var(--rule);
+      background: white;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+    }
+
+    .field label {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+
+    .field strong {
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 10px;
+      font-size: 12px;
+    }
+
+    .dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: #E8F3EA;
+      color: var(--success);
+      font-weight: 900;
+    }
+
+    .compact .content { padding: 12px; }
+    .compact .card { padding: 10px; margin-bottom: 8px; }
+    .compact .appbar { min-height: 54px; }
+    .compact h3 { font-size: 18px; }
+
+    .institutional .screen { background: #F5F1EC; }
+    .institutional .appbar { background: var(--ink); }
+    .institutional h3 { font-family: var(--font-display); font-size: 26px; font-weight: 500; }
+    .institutional .button { background: var(--ink); }
+    .institutional .badge { background: #EEE3DC; }
+
+    .blueprint .screen { background: #F3F7F8; }
+    .blueprint .appbar { background: var(--blue); }
+    .blueprint .chip.active, .blueprint .button { background: var(--blue); border-color: var(--blue); }
+    .blueprint .tab.active { color: var(--blue); }
+    .blueprint .tab.active::before { background: var(--blue); }
+
+    .receipt {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: rgba(245,241,236,0.18);
+    }
+
+    .receipt .sub,
+    .receipt .meta { color: rgba(245,241,236,0.7); }
+
+    @media (max-width: 980px) {
+      .deck-header,
+      .direction {
+        grid-template-columns: 1fr;
+      }
+
+      .deck-header {
+        align-items: start;
+        min-height: auto;
+      }
+
+      .direction {
+        min-height: auto;
+      }
+
+      .phone {
+        height: 650px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .phone {
+        width: 100%;
+        height: 620px;
+        border-radius: 24px;
+        padding: 8px;
+      }
+
+      .screen { border-radius: 18px; }
+      .direction { padding-inline: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="deck-header">
+    <div>
+      <div class="eyebrow">Bestattungszentrum · UX Direction Showcase</div>
+      <h1>One primary direction for a calm RFQ workspace</h1>
+      <p>This reference keeps only the implementation-relevant direction and supporting patterns: role clarity, structured RFQs, email-aware confirmations, multilingual UX with German as the primary/default language and English as the secondary supported language, and a restrained brand system based on #B8312F.</p>
+    </div>
+    <aside class="legend">
+      <h2>Evaluation Lens</h2>
+      <div class="legend-grid">
+        <div class="legend-row"><span class="num">1</span><span>Does it help funeral-home staff send a complete Anfrage quickly?</span></div>
+        <div class="legend-row"><span class="num">2</span><span>Does it make supplier requests feel actionable and unambiguous?</span></div>
+        <div class="legend-row"><span class="num">3</span><span>Does the brand feel serious without becoming cold?</span></div>
+        <div class="legend-row"><span class="num">4</span><span>Does it work German-first while still supporting English cleanly?</span></div>
+        <div class="legend-row"><span class="num">5</span><span>Can this be implemented by extending Ignite components?</span></div>
+      </div>
+    </aside>
+  </header>
+
+  <nav class="nav-strip" aria-label="Design directions">
+    <a href="#primary">Primary: Quiet OTTO Native</a>
+    <a href="#forms">Forms: Guided Anfrage</a>
+    <a href="#ledger">History: Quiet Ledger</a>
+    <a href="#brand-status">Status: Warm Institutional</a>
+    <a href="#archive">Archived Explorations</a>
+  </nav>
+
+  <main>
+    <section class="direction" id="primary">
+      <div class="direction-copy">
+        <div class="eyebrow">Primary Direction · Implementation Reference</div>
+        <h2>Quiet OTTO Native</h2>
+        <p>This is the closest adaptation of the live OTTO app screenshots, toned down for the funeral-industry context. It keeps the native-feeling gray canvas, large search pill, white rounded modules, two-column category grid, red active tab indicator, and horizontal content rhythm, but removes retail noise, coupon energy, price pressure, and the purple assistant treatment.</p>
+        <ul class="fit-list">
+          <li>Best candidate for the final mobile shell: familiar and modern, but calm enough for sensitive work.</li>
+          <li>Uses OTTO's real in-app rhythm: search at the top, modular content below, stable bottom navigation.</li>
+          <li>Replaces shopping modules with supplier categories, RFQ status cards, verified supplier tiles, and request shortcuts.</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">Live OTTO-derived</span>
+          <span class="tag">Not loud</span>
+          <span class="tag">Category grid</span>
+          <span class="tag">RFQ workspace</span>
+        </div>
+      </div>
+      <div class="mockup-area">
+        <div class="phone">
+          <div class="screen" style="background:#F0F0F0">
+            <div class="statusbar" style="height:32px"><span>9:41</span><span>LTE 100%</span></div>
+            <div style="display:grid;grid-template-columns:36px 1fr 58px;gap:10px;align-items:center;padding:8px 16px 14px">
+              <div style="font-size:30px;line-height:1;color:#1A1614">‹</div>
+              <div class="search" style="margin:0;border-radius:999px;border:0;min-height:46px;background:white;font-size:15px;color:#746D68">Wonach suchen Sie?</div>
+              <div style="min-height:46px;border-radius:999px;background:white;display:grid;place-items:center;position:relative;font-size:20px">♢<span style="position:absolute;right:8px;top:8px;background:#E60023;color:white;border-radius:999px;min-width:18px;height:18px;font-size:11px;display:grid;place-items:center;font-weight:800">2</span></div>
+            </div>
+            <div class="content" style="padding:4px 16px 12px;overflow:hidden">
+              <h3 style="font-size:24px;margin:4px 0 14px">Was benötigen Sie?</h3>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px">
+                <div class="card" style="height:78px;border:0;border-radius:14px;margin:0;display:flex;align-items:center;justify-content:space-between"><strong>Särge</strong><span style="font-family:var(--font-display);font-size:34px;color:#B8312F">S</span></div>
+                <div class="card" style="height:78px;border:0;border-radius:14px;margin:0;display:flex;align-items:center;justify-content:space-between"><strong>Urnen</strong><span style="font-family:var(--font-display);font-size:34px;color:#B8312F">U</span></div>
+                <div class="card" style="height:78px;border:0;border-radius:14px;margin:0;display:flex;align-items:center;justify-content:space-between"><strong>Floristik</strong><span style="font-family:var(--font-display);font-size:34px;color:#B8312F">F</span></div>
+                <div class="card" style="height:78px;border:0;border-radius:14px;margin:0;display:flex;align-items:center;justify-content:space-between"><strong>Transport</strong><span style="font-family:var(--font-display);font-size:34px;color:#B8312F">T</span></div>
+              </div>
+              <h3 style="font-size:22px;margin-bottom:12px">Aktuelle Anfragen</h3>
+              <div style="display:flex;gap:12px;width:560px">
+                <div class="card" style="width:245px;border:0;border-radius:16px;padding:16px;margin:0">
+                  <div class="meta"><span class="badge blue">Gesendet</span><span>Heute</span></div>
+                  <h3 style="font-size:18px;margin:12px 0 8px">12 Holzsärge</h3>
+                  <p class="sub">Meyer Sargmanufaktur wurde per E-Mail benachrichtigt.</p>
+                  <div class="button" style="min-height:38px">Anfrage ansehen</div>
+                </div>
+                <div class="card" style="width:245px;border:0;border-radius:16px;padding:16px;margin:0">
+                  <div class="meta"><span class="badge amber">Prüfen</span><span>Morgen</span></div>
+                  <h3 style="font-size:18px;margin:12px 0 8px">Urnen-Angebot</h3>
+                  <p class="sub">Antwort eingegangen, noch nicht entschieden.</p>
+                </div>
+              </div>
+            </div>
+            <div class="tabs">
+              <div class="tab active">Home</div>
+              <div class="tab">Suche</div>
+              <div class="tab">Anfragen</div>
+              <div class="tab">Profil</div>
+            </div>
+          </div>
+        </div>
+        <div class="phone">
+          <div class="screen" style="background:#F0F0F0">
+            <div class="statusbar" style="height:32px"><span>9:41</span><span>LTE 100%</span></div>
+            <div style="display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:center;padding:8px 16px 14px">
+              <div style="font-size:30px;line-height:1;color:#1A1614">‹</div>
+              <div class="search" style="margin:0;border-radius:999px;border:0;min-height:46px;background:white;font-size:15px;color:#746D68">Kategorie oder Lieferant suchen</div>
+            </div>
+            <div class="content" style="padding:4px 16px 12px;overflow:hidden">
+              <h3 style="font-size:24px;margin:4px 0 14px">Verifizierte Lieferanten</h3>
+              <div style="display:flex;gap:12px;width:560px;margin-bottom:22px">
+                <div class="card" style="width:250px;border:0;border-radius:16px;padding:16px;margin:0">
+                  <div style="height:134px;border-radius:13px;background:linear-gradient(135deg,#F5F1EC,#ffffff);display:grid;place-items:center;margin-bottom:12px">
+                    <span style="font-family:var(--font-display);font-size:62px;color:#B8312F">M</span>
+                  </div>
+                  <strong>Meyer Sargmanufaktur</strong>
+                  <div class="meta"><span>Hamburg</span><span class="badge green">Verifiziert</span></div>
+                </div>
+                <div class="card" style="width:250px;border:0;border-radius:16px;padding:16px;margin:0">
+                  <div style="height:134px;border-radius:13px;background:linear-gradient(135deg,#F5F1EC,#ffffff);display:grid;place-items:center;margin-bottom:12px">
+                    <span style="font-family:var(--font-display);font-size:62px;color:#B8312F">R</span>
+                  </div>
+                  <strong>Ruhewerk Urnen</strong>
+                  <div class="meta"><span>Bundesweit</span><span class="badge green">Verifiziert</span></div>
+                </div>
+              </div>
+              <h3 style="font-size:22px;margin-bottom:12px">Anfrage vorbereiten</h3>
+              <div class="card" style="border:0;border-radius:16px;padding:16px">
+                <div class="meta"><span class="badge">Särge</span><span>4 Schritte</span></div>
+                <h3 style="font-size:18px;margin:12px 0 8px">Strukturierte Anfrage senden</h3>
+                <p class="sub">Wir führen Sie durch Menge, Ausführung, Frist und Prüfung.</p>
+                <div class="progress"><span class="done"></span><span></span><span></span><span></span></div>
+                <div class="button">Anfrage starten</div>
+              </div>
+              <div style="min-height:42px;border-radius:12px;background:white;border:1px solid #D8D1C5;color:#746D68;display:flex;align-items:center;justify-content:center;font-size:13px;margin-top:10px">Hilfe & Kontakt</div>
+            </div>
+            <div class="tabs">
+              <div class="tab">Home</div>
+              <div class="tab active">Suche</div>
+              <div class="tab">Anfragen</div>
+              <div class="tab">Profil</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="direction" id="forms">
+      <div class="direction-copy">
+        <div class="eyebrow">Supporting Pattern · Forms</div>
+        <h2>Guided Anfrage</h2>
+        <p>Form-first and completion-oriented. The UI makes the category schema feel like a guided checklist, then closes with a professional receipt.</p>
+        <ul class="fit-list">
+          <li>Best for the defining RFQ creation flow.</li>
+          <li>Elevates review-before-submit and email-aware confirmation.</li>
+          <li>Useful as a pattern even if another direction wins overall.</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">Form flow</span>
+          <span class="tag">Schema renderer</span>
+          <span class="tag">Receipt pattern</span>
+        </div>
+      </div>
+      <div class="mockup-area">
+        <div class="phone">
+          <div class="screen">
+            <div class="statusbar"><span>9:41</span><span>LTE 100%</span></div>
+            <div class="appbar">
+              <div><div class="role">Anfrage erstellen</div><div class="brand">Neue Anfrage</div></div>
+              <div class="icon-btn">3/4</div>
+            </div>
+            <div class="content">
+              <h3>Details prüfen</h3>
+              <p class="sub">Vor dem Senden an Meyer Sargmanufaktur.</p>
+              <div class="progress"><span class="done"></span><span class="done"></span><span class="done"></span><span></span></div>
+              <div class="field"><label>Kategorie</label><strong>Holzsärge</strong></div>
+              <div class="field"><label>Benötigte Menge</label><strong>12 Stück</strong></div>
+              <div class="field"><label>Ausführung</label><strong>Eiche · Standardausstattung · matt</strong></div>
+              <div class="field"><label>Frist</label><strong>15. Juni 2026</strong></div>
+              <div class="card receipt">
+                <strong>Nach dem Senden</strong>
+                <p class="sub">Die Anfrage wird gespeichert und per E-Mail an den Lieferanten gesendet.</p>
+              </div>
+              <div class="button">Anfrage senden</div>
+              <div class="button secondary">Zurück bearbeiten</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="direction" id="ledger">
+      <div class="direction-copy">
+        <div class="eyebrow">Supporting Pattern · History</div>
+        <h2>Quiet Ledger</h2>
+        <p>A precise, compact direction for request history and timelines. It leans into auditability: clear metadata, stable rows, and fewer decorative surfaces.</p>
+        <ul class="fit-list">
+          <li>Best for request history, quote timeline, and account/security screens.</li>
+          <li>Useful when users compare statuses and timestamps repeatedly.</li>
+          <li>Should be softened with brand moments elsewhere to avoid feeling administrative.</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">History</span>
+          <span class="tag">Status rows</span>
+          <span class="tag">Audit clarity</span>
+        </div>
+      </div>
+      <div class="mockup-area">
+        <div class="phone compact">
+          <div class="screen">
+            <div class="statusbar"><span>9:41</span><span>LTE 100%</span></div>
+            <div class="appbar">
+              <div><div class="role">Bestattungsinstitut</div><div class="brand">Anfragen</div></div>
+              <div class="icon-btn">↧</div>
+            </div>
+            <div class="content">
+              <h3>Verlauf</h3>
+              <p class="sub">Gesendete Anfragen und Antworten.</p>
+              <div class="card">
+                <div class="meta"><span>RFQ-1024</span><span>15.06.2026</span><span class="badge green">Antwort erhalten</span></div>
+                <strong>Urnen aus Walnussholz</strong>
+                <div class="meta"><span>Ruhewerk Urnen</span><span>PDF verfügbar</span></div>
+              </div>
+              <div class="card">
+                <div class="meta"><span>RFQ-1023</span><span>14.06.2026</span><span class="badge blue">Gesendet</span></div>
+                <strong>12 Holzsärge, Eiche</strong>
+                <div class="meta"><span>Meyer Sargmanufaktur</span><span>E-Mail zugestellt</span></div>
+              </div>
+              <div class="card">
+                <div class="meta"><span>RFQ-1022</span><span>10.06.2026</span><span class="badge amber">Abgelaufen</span></div>
+                <strong>Blumenschmuck Kapelle</strong>
+                <div class="meta"><span>Floristik Nord</span><span>Keine Antwort</span></div>
+              </div>
+            </div>
+            <div class="tabs"><div class="tab">Home</div><div class="tab">Suche</div><div class="tab active">Anfragen</div><div class="tab">Profil</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="direction" id="brand-status">
+      <div class="direction-copy">
+        <div class="eyebrow">Supporting Pattern · Brand & Status</div>
+        <h2>Warm Institutional</h2>
+        <p>More brand-led and ceremonial, using deeper ink, serif titles, warm paper, and restrained red. It feels premium and sober, but risks being slower for dense workflows.</p>
+        <ul class="fit-list">
+          <li>Best for onboarding, signup, empty states, and brand moments.</li>
+          <li>Use sparingly inside operational screens to avoid reducing scan speed.</li>
+          <li>Good source for splash and account status screens.</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">Brand moments</span>
+          <span class="tag">Onboarding</span>
+          <span class="tag">Warm paper</span>
+        </div>
+      </div>
+      <div class="mockup-area">
+        <div class="phone institutional">
+          <div class="screen">
+            <div class="statusbar"><span>9:41</span><span>LTE 100%</span></div>
+            <div class="appbar">
+              <div><div class="role">Kontoantrag</div><div class="brand">Bestattungszentrum</div></div>
+              <div class="icon-btn">B</div>
+            </div>
+            <div class="content">
+              <h3>Ihr Antrag wird geprüft</h3>
+              <p class="sub">Wir haben Ihre Angaben gespeichert. Die Freigabe erfolgt nach Prüfung durch das Team.</p>
+              <div class="card">
+                <span class="badge amber">PENDING_REVIEW</span>
+                <h3 style="margin-top:12px">Manuelle Prüfung erforderlich</h3>
+                <p class="sub">Einzelunternehmen oder abweichende Registerdaten werden persönlich geprüft.</p>
+              </div>
+              <div class="timeline">
+                <div class="timeline-item"><span class="dot">✓</span><span>Unternehmensdaten übermittelt</span></div>
+                <div class="timeline-item"><span class="dot" style="background:#FFF3D8;color:#B26A00">2</span><span>Prüfung durch Bestattungszentrum</span></div>
+                <div class="timeline-item"><span class="dot" style="background:#EEE3DC;color:#746D68">3</span><span>Freigabe per E-Mail</span></div>
+              </div>
+              <div class="button">Status anzeigen</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="direction" id="archive">
+      <div class="direction-copy">
+        <div class="eyebrow">Archived Exploration</div>
+        <h2>Explored, Not Reference</h2>
+        <p>The earlier directions are intentionally removed from the implementation path. They were useful for exploration, but the app should now be built from one primary direction and three supporting pattern libraries.</p>
+        <ul class="fit-list">
+          <li><strong>Operational Red</strong> informed the red active/action system, but is too app-bar-heavy for the final shell.</li>
+          <li><strong>Supplier Command</strong> informed inbox density, but the dark chrome is too strong for the baseline supplier experience.</li>
+          <li><strong>Blue Dispatch Accent</strong> remains only as a semantic info/dispatch color idea, not a screen direction.</li>
+          <li><strong>Restrained OTTO Framework</strong> was superseded by Quiet OTTO Native after the live app screenshots.</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">Archive only</span>
+          <span class="tag">Do not implement directly</span>
+          <span class="tag">Use current sections above</span>
+        </div>
+      </div>
+      <div class="mockup-area">
+        <div class="phone compact">
+          <div class="screen" style="background:#F0F0F0">
+            <div class="statusbar"><span>9:41</span><span>LTE 100%</span></div>
+            <div class="content">
+              <h3>Implementation Source</h3>
+              <p class="sub">Use these sections for product design and build decisions.</p>
+              <div class="card"><strong>Primary</strong><div class="meta"><span>Quiet OTTO Native</span></div></div>
+              <div class="card"><strong>Forms</strong><div class="meta"><span>Guided Anfrage</span></div></div>
+              <div class="card"><strong>History</strong><div class="meta"><span>Quiet Ledger</span></div></div>
+              <div class="card"><strong>Status</strong><div class="meta"><span>Warm Institutional</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

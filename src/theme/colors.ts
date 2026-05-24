@@ -1,85 +1,73 @@
 const palette = {
   neutral100: "#FFFFFF",
-  neutral200: "#F4F2F1",
-  neutral300: "#D7CEC9",
-  neutral400: "#B6ACA6",
-  neutral500: "#978F8A",
-  neutral600: "#564E4A",
-  neutral700: "#3C3836",
-  neutral800: "#191015",
+  neutral200: "#F7F7F7",
+  neutral300: "#F6F3F1",
+  neutral400: "#D8D1C5",
+  neutral500: "#8B817A",
+  neutral600: "#5E5651",
+  neutral700: "#3A332F",
+  neutral800: "#1A1614",
   neutral900: "#000000",
 
-  primary100: "#F4E0D9",
-  primary200: "#E8C1B4",
-  primary300: "#DDA28E",
-  primary400: "#D28468",
-  primary500: "#C76542",
-  primary600: "#A54F31",
+  primary100: "#F7DFDD",
+  primary200: "#ECBAB7",
+  primary300: "#DB7772",
+  primary400: "#C8102E",
+  primary500: "#B8312F",
+  primary600: "#8E2422",
 
-  secondary100: "#DCDDE9",
-  secondary200: "#BCC0D6",
-  secondary300: "#9196B9",
-  secondary400: "#626894",
-  secondary500: "#41476E",
+  secondary100: "#EAF0F6",
+  secondary200: "#C9D9E8",
+  secondary300: "#8BAECF",
+  secondary400: "#4D7FA9",
+  secondary500: "#2F5F88",
 
-  accent100: "#FFEED4",
-  accent200: "#FFE1B2",
-  accent300: "#FDD495",
-  accent400: "#FBC878",
-  accent500: "#FFBB50",
+  accent100: "#F5F1EC",
+  accent200: "#EEE5D9",
+  accent300: "#D8D1C5",
+  accent400: "#B8AB9A",
+  accent500: "#8A725B",
 
-  angry100: "#F2D6CD",
-  angry500: "#C03403",
+  success100: "#E3F2E8",
+  success500: "#26703F",
+  warning100: "#FFF3D6",
+  warning500: "#946100",
+  danger100: "#F8DEDA",
+  danger500: "#A23B33",
+  info100: "#E7F0F8",
+  info500: "#326A96",
 
   overlay20: "rgba(25, 16, 21, 0.2)",
   overlay50: "rgba(25, 16, 21, 0.5)",
 } as const
 
 export const colors = {
-  /**
-   * The palette is available to use, but prefer using the name.
-   * This is only included for rare, one-off cases. Try to use
-   * semantic names as much as possible.
-   */
   palette,
-  /**
-   * A helper for making something see-thru.
-   */
   transparent: "rgba(0, 0, 0, 0)",
-  /**
-   * The default text color in many components.
-   */
+
+  primary: palette.primary500,
+  primaryPressed: palette.primary600,
+  primaryAccent: palette.primary400,
+  onPrimary: palette.neutral100,
+  surface: palette.neutral100,
+  surfaceWarm: palette.accent100,
+  ink: palette.neutral800,
   text: palette.neutral800,
-  /**
-   * Secondary text information.
-   */
+  textMuted: palette.neutral600,
   textDim: palette.neutral600,
-  /**
-   * The default color of the screen background.
-   */
-  background: palette.neutral200,
-  /**
-   * The default border color.
-   */
+  background: palette.neutral300,
   border: palette.neutral400,
-  /**
-   * The main tinting color.
-   */
   tint: palette.primary500,
-  /**
-   * The inactive tinting color.
-   */
-  tintInactive: palette.neutral300,
-  /**
-   * A subtle color used for lines.
-   */
-  separator: palette.neutral300,
-  /**
-   * Error messages.
-   */
-  error: palette.angry500,
-  /**
-   * Error Background.
-   */
-  errorBackground: palette.angry100,
+  tintInactive: palette.neutral500,
+  separator: palette.neutral400,
+  success: palette.success500,
+  successBackground: palette.success100,
+  warning: palette.warning500,
+  warningBackground: palette.warning100,
+  danger: palette.danger500,
+  dangerBackground: palette.danger100,
+  info: palette.info500,
+  infoBackground: palette.info100,
+  error: palette.danger500,
+  errorBackground: palette.danger100,
 } as const

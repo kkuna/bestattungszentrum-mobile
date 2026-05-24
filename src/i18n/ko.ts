@@ -1,4 +1,4 @@
-import { Translations } from "./en"
+import en, { Translations } from "./en"
 
 const ko: Translations = {
   common: {
@@ -25,6 +25,11 @@ const ko: Translations = {
       button: "다시 시도해봅시다",
     },
   },
+  api: en.api,
+  auth: en.auth,
+  funeralHome: en.funeralHome,
+  supplier: en.supplier,
+  shared: en.shared,
 }
 
 export default ko

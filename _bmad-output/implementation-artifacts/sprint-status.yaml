@@ -1,0 +1,77 @@
+# generated: 2026-05-23T20:59:07+0200
+# last_updated: 2026-05-24T17:08:21+0200
+# project: Bestattungszentrum
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: /Users/fariskunic/Documents/personal/bsc/Bestattungszentrum/_bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog -> in-progress: Automatically when first story is created (via create-story)
+#   - in-progress -> done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: "2026-05-23T20:59:07+0200"
+last_updated: "2026-05-24T17:08:21+0200"
+project: Bestattungszentrum
+project_key: NOKEY
+tracking_system: file-system
+story_location: /Users/fariskunic/Documents/personal/bsc/Bestattungszentrum/_bmad-output/implementation-artifacts
+
+development_status:
+  epic-1: in-progress
+  1-1-starter-alignment-and-route-group-shell: done
+  1-2-german-first-theme-and-i18n-baseline: done
+  1-3-typed-api-dtos-and-normalized-api-result-boundary: done
+  1-4-session-storage-and-auth-api-integration: backlog
+  1-5-session-boot-refresh-and-logout-handling: backlog
+  1-6-role-gate-and-account-status-handling: backlog
+  1-7-role-specific-tabs-and-shared-settings-placeholders: backlog
+  epic-1-retrospective: optional
+  epic-2: backlog
+  2-1-funeral-home-home-and-category-discovery-baseline: backlog
+  2-2-supplier-search-filters-and-supplier-cards: backlog
+  2-3-supplier-detail-and-rfq-entry-points: backlog
+  2-4-dynamic-rfq-form-renderer: backlog
+  2-5-rfq-review-and-send-receipt: backlog
+  2-6-outgoing-request-history-detail-and-timeline: backlog
+  2-7-suspended-funeral-home-read-only-mode: backlog
+  2-8-funeral-home-vertical-slice-smoke-flow: backlog
+  epic-2-retrospective: optional
+  epic-3: backlog
+  3-1-supplier-home-and-inbox-overview: backlog
+  3-2-supplier-request-detail-and-timeline: backlog
+  3-3-quote-response-form-and-review: backlog
+  3-4-quote-response-submission-and-receipt: backlog
+  3-5-supplier-catalog-placeholder: backlog
+  3-6-supplier-vertical-slice-smoke-flow: backlog
+  epic-3-retrospective: optional
+  epic-4: backlog
+  4-1-public-signup-entry-and-guided-form-shell: backlog
+  4-2-company-legal-address-and-contact-data-capture: backlog
+  4-3-signup-review-and-submission: backlog
+  4-4-verification-result-and-applicant-status-states: backlog
+  epic-4-retrospective: optional

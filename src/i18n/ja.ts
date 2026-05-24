@@ -1,4 +1,4 @@
-import { Translations } from "./en"
+import en, { Translations } from "./en"
 
 const ja: Translations = {
   common: {
@@ -26,6 +26,11 @@ const ja: Translations = {
       button: "もう一度やってみよう",
     },
   },
+  api: en.api,
+  auth: en.auth,
+  funeralHome: en.funeralHome,
+  supplier: en.supplier,
+  shared: en.shared,
 }
 
 export default ja
