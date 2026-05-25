@@ -43,6 +43,14 @@ jest.doMock("react-native", () => {
 
 jest.mock("i18next", () => mockI18next)
 
+// lucide-react-native pulls in react-native-svg; tests never assert on icon
+// glyphs, so stub every named icon export with a no-op component.
+jest.mock("lucide-react-native", () => {
+  const React = require("react")
+  const Stub = () => React.createElement(React.Fragment, null)
+  return new Proxy({}, { get: () => Stub })
+})
+
 jest.mock("expo-localization", () => ({
   ...jest.requireActual("expo-localization"),
   getLocales: () => [{ languageTag: "en-US", textDirection: "ltr" }],

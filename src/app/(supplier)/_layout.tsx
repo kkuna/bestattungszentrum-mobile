@@ -10,12 +10,15 @@ export default function SupplierLayout() {
     return <Redirect href="/" />
   }
 
-  if (session.status === "authenticated") {
-    const decision = getRouteAccessDecision(session.session, "supplier")
+  // Fail closed: only an allowed, authenticated session reaches the protected
+  // slot. Booting/offline states render nothing here — SessionGate owns their UI.
+  if (session.status !== "authenticated") {
+    return null
+  }
 
-    if (!decision.allowed) {
-      return <Redirect href={decision.redirectPath ?? "/account-status"} />
-    }
+  const decision = getRouteAccessDecision(session.session, "supplier")
+  if (!decision.allowed) {
+    return <Redirect href={decision.redirectPath ?? "/account-status"} />
   }
 
   return <Slot />

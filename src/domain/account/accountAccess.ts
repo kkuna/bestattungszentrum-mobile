@@ -112,6 +112,51 @@ export function getRoleGroupForSession(
   return null
 }
 
+// Blocking account statuses ordered most-restrictive first. When a session
+// triggers more than one blocking status (e.g. a suspended account that also has
+// a failed verification), the most restrictive applicable status wins, so the
+// outcome does not depend on which field happens to be checked first.
+const blockingStatusSeverity: Exclude<AccountAccessStatus, "active">[] = [
+  "wrongRole",
+  "suspended",
+  "closed",
+  "verificationFailed",
+  "providerUnavailable",
+  "unknown",
+  "pendingReview",
+  "pendingApproval",
+]
+
+// Resolve a single status field. An absent value adds no constraint; a present
+// but unrecognized value fails closed to "unknown" rather than being silently
+// skipped — a corrupt or legacy persisted value must never read as "allowed".
+function resolveMappedStatus<Key extends string>(
+  value: Key | null | undefined,
+  map: Record<Key, Exclude<AccountAccessStatus, "active"> | null>,
+): AccountAccessStatus | null {
+  if (!value) {
+    return null
+  }
+
+  if (!(value in map)) {
+    return "unknown"
+  }
+
+  return map[value]
+}
+
+function pickMostRestrictive(
+  statuses: AccountAccessStatus[],
+): Exclude<AccountAccessStatus, "active"> {
+  for (const candidate of blockingStatusSeverity) {
+    if (statuses.includes(candidate)) {
+      return candidate
+    }
+  }
+
+  return "unknown"
+}
+
 export function normalizeAccountAccess(
   session: AuthenticatedSession | null | undefined,
 ): AccountAccessDecision {
@@ -128,25 +173,29 @@ export function normalizeAccountAccess(
     return closedDecision("unknown", roleGroup)
   }
 
-  const verificationStatus = session.verificationStatus
-    ? verificationStatusMap[session.verificationStatus]
-    : null
+  const blocking: AccountAccessStatus[] = []
+
+  const verificationStatus = resolveMappedStatus(session.verificationStatus, verificationStatusMap)
   if (verificationStatus) {
-    return closedDecision(verificationStatus, roleGroup)
+    blocking.push(verificationStatus)
   }
 
-  const userStatus = session.userStatus ? userStatusMap[session.userStatus] : null
+  const userStatus = resolveMappedStatus(session.userStatus, userStatusMap)
   if (userStatus) {
-    return closedDecision(userStatus, roleGroup)
+    blocking.push(userStatus)
   }
 
-  if (!session.accountStatus) {
-    return closedDecision("unknown", roleGroup)
+  if (!session.accountStatus || !(session.accountStatus in accountStatusMap)) {
+    blocking.push("unknown")
+  } else {
+    const accountStatus = accountStatusMap[session.accountStatus]
+    if (accountStatus !== "active") {
+      blocking.push(accountStatus)
+    }
   }
 
-  const accountStatus = accountStatusMap[session.accountStatus] ?? "unknown"
-  if (accountStatus !== "active") {
-    return closedDecision(accountStatus, roleGroup)
+  if (blocking.length > 0) {
+    return closedDecision(pickMostRestrictive(blocking), roleGroup)
   }
 
   return {

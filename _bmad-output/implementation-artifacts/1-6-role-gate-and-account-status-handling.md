@@ -1,6 +1,6 @@
 # Story 1.6: Role Gate and Account Status Handling
 
-Status: review
+Status: done
 
 <!-- Completion note: Ultimate context engine analysis completed - comprehensive developer guide created. -->
 
@@ -66,6 +66,12 @@ so that I only see workflows I am allowed to use and blocked states are explaine
 ### Review Findings
 
 - [x] [Review][Patch] Align verification-failed status with the backend mobile contract [`src/services/api/schemas.ts:19`] — Story 1.6 requires a verification-failed blocked state, but the mobile DTO models `VERIFICATION_FAILED` as an `accountStatus` value while the backend `AccountStatus` and OpenAPI mobile contract only expose `PENDING_REVIEW`, `PENDING_APPROVAL`, `ACTIVE`, `SUSPENDED`, and `CLOSED`; backend verification failure is represented separately as `verificationStatus: "FAILED"`. The current tests therefore cover an impossible backend account-status value, and a real failed verification cannot reach the `verificationFailed` panel unless the backend mobile auth/current-user contract is expanded or the mobile mapper accepts and maps backend verification status.
+
+#### Review pass 2026-05-24 (CR: Blind Hunter + Edge Case Hunter + Acceptance Auditor)
+
+- [x] [Review][Patch] Status precedence: `verificationStatus` outranks `userStatus` and `accountStatus` — In `normalizeAccountAccess` the checks run verification → user → account, so a session that is both `verificationStatus: "FAILED"` and `accountStatus: "SUSPENDED"` reports `verificationFailed` (never `suspended`), and `verificationStatus: "UNVERIFIED"` collapses into the same `pendingReview` copy as `accountStatus: "PENDING_REVIEW"`. [`src/domain/account/accountAccess.ts:131-149`] → **Resolved (reviewer discretion):** replace first-match-by-field with explicit severity-priority selection so the most restrictive applicable status wins (`suspended`/`closed` > `verificationFailed` > `providerUnavailable` > `pendingReview` > `pendingApproval`), making the outcome order-independent. Keep `UNVERIFIED → pendingReview` (shared "still under review" semantics).
+- [x] [Review][Patch] Inconsistent fail-open vs fail-closed for unrecognized status enum values [`src/domain/account/accountAccess.ts:131-147`] — `accountStatusMap[session.accountStatus] ?? "unknown"` fails closed on an unrecognized value, but `verificationStatusMap[session.verificationStatus]` and `userStatusMap[session.userStatus]` return `undefined` for out-of-enum values and the `if (...)` guards skip them (fail-open past those checks). A persisted/legacy session carrying a corrupt `verificationStatus`/`userStatus` but a valid `ACTIVE` accountStatus would be treated as active. Make all three maps fail closed consistently (treat an unrecognized verification/user status as a blocked `unknown` state).
+- [x] [Review][Patch] Role-gate layouts fail open to `<Slot />` for non-authenticated, non-signedOut states [`src/app/(funeral-home)/_layout.tsx:21`, `src/app/(supplier)/_layout.tsx:22`] — The layouts only branch on `signedOut` and `authenticated`; any other `SessionControllerState` (`booting`, `offline`) falls through to `return <Slot />`, rendering protected content. This is safe today only because the global `SessionGate` intercepts `booting`/`offline` before routes render. Defense-in-depth: the gate layout default should be fail-closed (render `null`/redirect) for any status that is not an allowed `authenticated` session.
 
 ## Dev Notes
 

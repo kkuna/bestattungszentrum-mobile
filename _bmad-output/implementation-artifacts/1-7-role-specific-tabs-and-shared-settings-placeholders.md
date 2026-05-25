@@ -1,6 +1,6 @@
 # Story 1.7: Role-Specific Tabs and Shared Settings Placeholders
 
-Status: review
+Status: done
 
 <!-- Completion note: Ultimate context engine analysis completed - comprehensive developer guide created. -->
 
@@ -72,6 +72,13 @@ so that I can move through the correct workspace and manage basic app preference
 ### Review Findings
 
 - [x] [Review][Patch] Keep logout-all authenticated through the backend contract — the mobile API must send the bearer token to `/api/mobile/auth/logout-all` and `sessionService.logoutAll()` must preserve local token material until the backend call has been attempted, because the backend endpoint authenticates the current user from the access token rather than a refresh-token request body.
+
+#### Review pass 2026-05-24 (CR: Blind Hunter + Edge Case Hunter + Acceptance Auditor)
+
+- [x] [Review][Patch] Blocked / wrong-role users can still reach shared settings and invoke the language mutation — `src/app/(shared)/_layout.tsx` is a bare `<Slot />` and `AuthenticatedSettingsRoute` only branches on `signedOut` vs `authenticated`, never on account status/role. A `SUSPENDED`/`PENDING_REVIEW`/`wrongRole` (e.g. `ADMIN`) user who is correctly bounced from `/funeral-home` and `/supplier` can still deep-link to `/settings/language`, `/settings/session-security`, etc. and call `changeLanguagePreference` (a real server mutation). [`src/features/shared/AuthenticatedSettingsRoute.tsx:6-18`, `src/app/(shared)/_layout.tsx`] → **Resolved (user):** gate settings by account status — block restricted/wrong-role users from `/settings/*` (redirect to `/account-status`) while preserving a sign-out path.
+- [x] [Review][Action] AC1 (active brand-red tab state) and AC5 (compact German tab layout) were never verified on device — Per the story's own Debug Log/Completion Notes, Argent runtime verification could never reach an active workspace because the backend fixtures omit `accountStatus`/`userStatus`, so login always fails closed to "Status unbekannt". The active funeral-home/supplier tab bar (`fontSize: 11`, `tabBarLabelPosition: "below-icon"`, 5 tabs, no `numberOfLines`/truncation; longest German label "Einstellungen") was therefore never observed rendered. [`src/navigation/RoleTabs.tsx`] → **Resolved (user):** verify now via a mock/fixture session that reaches an active workspace; visually confirm active brand-red tab state and compact German labels via Argent, and add explicit label truncation if clipping is observed. → **Verified 2026-05-25 (Argent, Pixel_9_Pro / Android API 37):** rebuilt the dev client with `react-native-svg`, injected a temporary active-session fixture (since reverted) to reach active workspaces. Confirmed: (AC1) funeral-home tabs Start/Entdecken/Anfragen/Profil/Einstellungen render with brand-red active state on Start; (AC2) supplier tabs Start/Anfragen/Katalog/Profil/Einstellungen render with no funeral-home discover/RFQ exposure; (Patch D) lucide icons render for both roles (House/Compass/FileText/User/Settings · House/Inbox/Package/User/Settings); (AC5) German labels fit except "Einstellungen", which truncates to "Einstellung…" via React Navigation default — no overlap, collision, or clipped controls, and the accessibility label remains the full word. AC5 satisfied (intentional truncation). Minor cosmetic follow-up only: shorten the German settings label or allow two lines if the ellipsis is undesired.
+- [x] [Review][Patch] Tab icons are semantically mismatched placeholders — Home → `menu`, Profile → `lock`, Quotes/Requests → `bell`, Discover/Catalog → `view` (reused). Ignite's bundled icon set has only ~13 glyphs. [`src/navigation/RoleTabs.tsx`] → **Resolved (user):** add `lucide-react-native` icons and map semantically correct icons per tab.
+- [x] [Review][Defer] Test-quality nits [`src/navigation/roleTabs.test.tsx`] — deferred, non-blocking. Hard-coded `"#B8312F"` hex assertion couples the test to a literal instead of the theme `tint` token; identical Jest-mock boilerplate is duplicated across 4 test files; the i18n test mock returns the raw key for missing paths, so tests can pass against missing translations. Maintainability only — does not affect runtime behavior.
 
 ## Dev Notes
 
@@ -325,3 +332,4 @@ GPT-5 Codex
 ### Change Log
 
 - 2026-05-24T19:55:19+0200: Implemented role-specific tabs, shared settings placeholders, session-backed language preference updates, localization, focused tests, and Android Argent verification for Story 1.7.
+- 2026-05-25: Code review pass — applied review patches (gate settings by account status, swap tab icons to lucide-react-native + react-native-svg), deferred test-quality nits, and completed on-device Argent verification of active funeral-home/supplier tabs (AC1/AC2/AC5). Story moved to done.

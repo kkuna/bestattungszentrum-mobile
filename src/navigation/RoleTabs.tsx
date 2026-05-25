@@ -1,7 +1,16 @@
 import { Tabs } from "expo-router"
+import {
+  Compass,
+  FileText,
+  House,
+  Inbox,
+  Package,
+  Settings,
+  User,
+  type LucideIcon,
+} from "lucide-react-native"
 import { useTranslation } from "react-i18next"
 
-import { Icon, type IconTypes } from "@/components/Icon"
 import type { TxKeyPath } from "@/i18n"
 import { useAppTheme } from "@/theme/context"
 
@@ -9,7 +18,7 @@ type RoleTabConfig = {
   name: string
   titleTx: TxKeyPath
   accessibilityLabelTx: TxKeyPath
-  icon: IconTypes
+  Icon: LucideIcon
 }
 
 const funeralHomeTabs: RoleTabConfig[] = [
@@ -17,31 +26,31 @@ const funeralHomeTabs: RoleTabConfig[] = [
     name: "index",
     titleTx: "funeralHome:tabs.home",
     accessibilityLabelTx: "funeralHome:tabAccessibility.home",
-    icon: "menu",
+    Icon: House,
   },
   {
     name: "discover",
     titleTx: "funeralHome:tabs.discover",
     accessibilityLabelTx: "funeralHome:tabAccessibility.discover",
-    icon: "view",
+    Icon: Compass,
   },
   {
     name: "quotes",
     titleTx: "funeralHome:tabs.quotes",
     accessibilityLabelTx: "funeralHome:tabAccessibility.quotes",
-    icon: "bell",
+    Icon: FileText,
   },
   {
     name: "profile",
     titleTx: "shared:tabs.profile",
     accessibilityLabelTx: "shared:tabAccessibility.profile",
-    icon: "lock",
+    Icon: User,
   },
   {
     name: "settings",
     titleTx: "shared:tabs.settings",
     accessibilityLabelTx: "shared:tabAccessibility.settings",
-    icon: "settings",
+    Icon: Settings,
   },
 ]
 
@@ -50,31 +59,31 @@ const supplierTabs: RoleTabConfig[] = [
     name: "index",
     titleTx: "supplier:tabs.home",
     accessibilityLabelTx: "supplier:tabAccessibility.home",
-    icon: "menu",
+    Icon: House,
   },
   {
     name: "requests",
     titleTx: "supplier:tabs.requests",
     accessibilityLabelTx: "supplier:tabAccessibility.requests",
-    icon: "bell",
+    Icon: Inbox,
   },
   {
     name: "catalog",
     titleTx: "supplier:tabs.catalog",
     accessibilityLabelTx: "supplier:tabAccessibility.catalog",
-    icon: "view",
+    Icon: Package,
   },
   {
     name: "profile",
     titleTx: "shared:tabs.profile",
     accessibilityLabelTx: "shared:tabAccessibility.profile",
-    icon: "lock",
+    Icon: User,
   },
   {
     name: "settings",
     titleTx: "shared:tabs.settings",
     accessibilityLabelTx: "shared:tabAccessibility.settings",
-    icon: "settings",
+    Icon: Settings,
   },
 ]
 
@@ -116,20 +125,24 @@ function RoleTabs({ tabs }: { tabs: RoleTabConfig[] }) {
         },
       }}
     >
-      {tabs.map((tab) => (
-        <Tabs.Screen
-          key={tab.name}
-          name={tab.name}
-          options={{
-            title: t(tab.titleTx),
-            tabBarLabel: t(tab.titleTx),
-            tabBarAccessibilityLabel: t(tab.accessibilityLabelTx),
-            tabBarIcon: ({ color, focused }) => (
-              <Icon icon={tab.icon} color={color} size={focused ? 24 : 22} />
-            ),
-          }}
-        />
-      ))}
+      {tabs.map((tab) => {
+        const TabIcon = tab.Icon
+
+        return (
+          <Tabs.Screen
+            key={tab.name}
+            name={tab.name}
+            options={{
+              title: t(tab.titleTx),
+              tabBarLabel: t(tab.titleTx),
+              tabBarAccessibilityLabel: t(tab.accessibilityLabelTx),
+              tabBarIcon: ({ color, focused }) => (
+                <TabIcon color={color} size={focused ? 24 : 22} />
+              ),
+            }}
+          />
+        )
+      })}
     </Tabs>
   )
 }
