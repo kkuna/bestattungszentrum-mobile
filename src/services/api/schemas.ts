@@ -110,8 +110,8 @@ export const categorySchema = z.object({
 
 export const supplierSchema = z.object({
   id: z.string(),
-  legalName: z.string(),
-  tradingName: z.string(),
+  legalName: nonEmptyString,
+  tradingName: z.string().trim(),
   hrCourt: optionalNullableString,
   hrType: optionalNullableString,
   hrNumber: optionalNullableString,

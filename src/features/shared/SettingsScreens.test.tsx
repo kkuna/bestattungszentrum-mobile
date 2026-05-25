@@ -31,10 +31,12 @@ jest.mock("react-native-safe-area-context", () =>
 )
 
 const mockPush = jest.fn()
+const mockReplace = jest.fn()
 
 jest.mock("expo-router", () => ({
   router: {
     push: mockPush,
+    replace: mockReplace,
   },
 }))
 
@@ -116,6 +118,32 @@ describe("shared settings screens", () => {
       expect(changeLanguagePreference).toHaveBeenCalledWith("en")
       expect(i18n.changeLanguage).toHaveBeenCalledWith("en")
     })
+  })
+
+  it("returns funeral-home users from language settings to their settings tab", () => {
+    const { LanguageSettingsScreen } = require("./LanguageSettingsScreen")
+
+    const screen = renderWithProviders(<LanguageSettingsScreen />)
+
+    fireEvent.press(screen.getByLabelText(de.shared.settings.language.backAccessibilityLabel))
+
+    expect(mockReplace).toHaveBeenCalledWith("/funeral-home/settings")
+  })
+
+  it("returns supplier users from language settings to their settings tab", () => {
+    mockUseSession({
+      session: {
+        status: "authenticated",
+        session: { ...activeSession, role: "SUPPLIER_USER" },
+      },
+    })
+    const { LanguageSettingsScreen } = require("./LanguageSettingsScreen")
+
+    const screen = renderWithProviders(<LanguageSettingsScreen />)
+
+    fireEvent.press(screen.getByLabelText(de.shared.settings.language.backAccessibilityLabel))
+
+    expect(mockReplace).toHaveBeenCalledWith("/supplier/settings")
   })
 
   it("exposes session sign-out through useSession", () => {

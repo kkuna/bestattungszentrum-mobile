@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: "2026-05-23T20:59:07+0200"
-last_updated: "2026-05-25T12:00:00+0200"
+last_updated: "2026-05-26T00:09:01+0200"
 project: Bestattungszentrum
 project_key: NOKEY
 tracking_system: file-system
@@ -51,13 +51,13 @@ development_status:
   1-6-role-gate-and-account-status-handling: done
   1-7-role-specific-tabs-and-shared-settings-placeholders: done
   epic-1-retrospective: done
-  epic-2: backlog
-  2-1-funeral-home-home-and-category-discovery-baseline: backlog
-  2-2-supplier-search-filters-and-supplier-cards: backlog
-  2-3-supplier-detail-and-rfq-entry-points: backlog
-  2-4-dynamic-rfq-form-renderer: backlog
+  epic-2: in-progress
+  2-1-funeral-home-home-and-category-discovery-baseline: done
+  2-2-supplier-search-filters-and-supplier-cards: done
+  2-3-supplier-detail-and-rfq-entry-points: done
+  2-4-dynamic-rfq-form-renderer: ready-for-dev
   2-5-rfq-review-and-send-receipt: backlog
-  2-6-outgoing-request-history-detail-and-timeline: backlog
+  2-6-outgoing-request-history-detail-and-timeline: ready-for-dev
   2-7-suspended-funeral-home-read-only-mode: backlog
   2-8-funeral-home-vertical-slice-smoke-flow: backlog
   epic-2-retrospective: optional
