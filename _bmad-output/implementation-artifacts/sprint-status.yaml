@@ -35,14 +35,14 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: "2026-05-23T20:59:07+0200"
-last_updated: "2026-05-25T00:00:00+0200"
+last_updated: "2026-05-25T12:00:00+0200"
 project: Bestattungszentrum
 project_key: NOKEY
 tracking_system: file-system
 story_location: /Users/fariskunic/Documents/personal/bsc/Bestattungszentrum/_bmad-output/implementation-artifacts
 
 development_status:
-  epic-1: in-progress
+  epic-1: done
   1-1-starter-alignment-and-route-group-shell: done
   1-2-german-first-theme-and-i18n-baseline: done
   1-3-typed-api-dtos-and-normalized-api-result-boundary: done
@@ -50,7 +50,7 @@ development_status:
   1-5-session-boot-refresh-and-logout-handling: done
   1-6-role-gate-and-account-status-handling: done
   1-7-role-specific-tabs-and-shared-settings-placeholders: done
-  epic-1-retrospective: optional
+  epic-1-retrospective: done
   epic-2: backlog
   2-1-funeral-home-home-and-category-discovery-baseline: backlog
   2-2-supplier-search-filters-and-supplier-cards: backlog

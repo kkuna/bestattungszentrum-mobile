@@ -231,3 +231,4 @@ GPT-5 Codex
 
 - 2026-05-23: Implemented starter route replacement, route group shell, localized placeholders, and shell tests.
 - 2026-05-23: Ran Argent iOS smoke test; build/install passed, runtime redbox blocks acceptance verification, story returned to in-progress.
+- 2026-05-25: iOS dev-client redbox (`RCTEventEmitter ... not registered as callable`) RESOLVED via clean pod reinstall + fresh build on the current toolchain. iOS app now renders and cold-launches without redbox (iPhone 16 Pro / iOS 18.3). Root cause was a stale/incompatible native build, not app JS. See `investigations/ios-redbox-resolution.md`.
