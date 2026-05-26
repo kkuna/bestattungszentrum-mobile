@@ -46,6 +46,9 @@ jest.mock("expo-router", () => {
       <View>
         <Text testID="tab-active-tint">{screenOptions.tabBarActiveTintColor}</Text>
         <Text testID="tab-inactive-tint">{screenOptions.tabBarInactiveTintColor}</Text>
+        <Text testID="tab-active-background">
+          {String(screenOptions.tabBarActiveBackgroundColor)}
+        </Text>
         {children}
       </View>
     )
@@ -83,6 +86,7 @@ describe("role tab layouts", () => {
     const screen = renderWithProviders(<FuneralHomeTabs />)
 
     expect(screen.getByTestId("tab-active-tint").props.children).toBe("#B8312F")
+    expect(screen.getByTestId("tab-active-background").props.children).toBe("undefined")
     expect(screen.getByTestId("tab-index").props.children).toContain(de.funeralHome.tabs.home)
     expect(screen.getByTestId("tab-discover").props.children).toContain(
       de.funeralHome.tabs.discover,

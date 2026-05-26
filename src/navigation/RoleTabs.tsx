@@ -111,7 +111,6 @@ function RoleTabs({
         headerShown: false,
         tabBarActiveTintColor: theme.colors.tint,
         tabBarInactiveTintColor: theme.colors.tintInactive,
-        tabBarActiveBackgroundColor: theme.colors.surfaceWarm,
         tabBarStyle: {
           backgroundColor: theme.colors.surface,
           borderTopColor: theme.colors.border,
