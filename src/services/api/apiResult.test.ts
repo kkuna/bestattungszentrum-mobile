@@ -184,7 +184,7 @@ const createQuoteRequestInputFixture = {
   categoryId: "cat-1",
   subject: "Flower request",
   message: "Please quote.",
-  deadline: "2026-06-01T09:00:00.000Z",
+  deadline: "2026-06-01",
   attributes: { color: "white" },
   attachments: [],
 }
@@ -404,7 +404,7 @@ describe("API DTO schemas", () => {
       categoryId: "cat-1",
       subject: "Flower request",
       message: "Please quote.",
-      deadline: "2026-06-01T09:00:00.000Z",
+      deadline: "2026-06-01",
     }
 
     expect(createQuoteRequestInputSchema.parse(minimalInput)).toEqual({

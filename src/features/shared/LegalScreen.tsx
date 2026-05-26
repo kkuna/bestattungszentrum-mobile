@@ -28,5 +28,5 @@ interface LegalScreenProps {
 }
 
 export function LegalScreen({ kind }: LegalScreenProps) {
-  return <PlaceholderScreen {...legalCopy[kind]} />
+  return <PlaceholderScreen {...legalCopy[kind]} showBack backFallbackHref="/" />
 }

@@ -13,7 +13,9 @@ export function FuneralHomeQuotesPlaceholderScreen() {
       eyebrowTx="funeralHome:quotes.eyebrow"
       titleTx={isNewRequestEntry ? "funeralHome:quotes.newTitle" : "funeralHome:quotes.title"}
       bodyTx={isNewRequestEntry ? "funeralHome:quotes.newBody" : "funeralHome:quotes.body"}
-      statusTx={isNewRequestEntry ? "funeralHome:quotes.newStatus" : "funeralHome:quotes.status"}
+      statusTx={
+        isNewRequestEntry ? "funeralHome:quotes.newStatus" : "funeralHome:quotes.statusNote"
+      }
     />
   )
 }

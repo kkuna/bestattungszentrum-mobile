@@ -1,6 +1,6 @@
 # Story 2.4: Dynamic RFQ Form Renderer
 
-Status: ready-for-dev
+Status: done
 
 <!-- Completion note: Story draft prepared for dev-story execution after Story 2.3 defines the RFQ entry route/context handoff. Do not treat this as implementation evidence. -->
 
@@ -24,59 +24,70 @@ Out of scope: checkout, payment, order placement, cart, purchase, chat, supplier
 
 ## Tasks/Subtasks
 
-- [ ] Confirm the RFQ entry route contract from Story 2.3 before implementation starts. (AC: 1)
-  - [ ] Use the Story 2.3 handoff as the source of truth for `supplierId`, `categoryId`, and optional `categorySlug` query params.
-  - [ ] Expected candidate route: `/funeral-home/quotes/new?supplierId=...&categoryId=...`.
-  - [ ] If `src/app/(funeral-home)/funeral-home/quotes.tsx` still exists, coordinate route ownership before adding `quotes/new.tsx`; only one implementation story should refactor the Quotes tab into a folder route.
-  - [ ] Preserve the current protected funeral-home gate in `src/app/(funeral-home)/_layout.tsx`; do not duplicate token/session checks in the route file.
-  - [ ] Block missing, invalid, inactive, or unauthorized supplier/category context with localized recovery copy instead of opening an incomplete form.
+- [x] Confirm the RFQ entry route contract from Story 2.3 before implementation starts. (AC: 1)
+  - [x] Use the Story 2.3 handoff as the source of truth for `supplierId`, `categoryId`, and optional `categorySlug` query params.
+  - [x] Expected candidate route: `/funeral-home/quotes/new?supplierId=...&categoryId=...`.
+  - [x] If `src/app/(funeral-home)/funeral-home/quotes.tsx` still exists, coordinate route ownership before adding `quotes/new.tsx`; only one implementation story should refactor the Quotes tab into a folder route.
+  - [x] Preserve the current protected funeral-home gate in `src/app/(funeral-home)/_layout.tsx`; do not duplicate token/session checks in the route file.
+  - [x] Block missing, invalid, inactive, or unauthorized supplier/category context with localized recovery copy instead of opening an incomplete form.
 
-- [ ] Add category/schema loading for the RFQ form context. (AC: 1-4)
-  - [ ] Reuse the existing `categoriesApi.listCategories()` boundary and `useCategoriesQuery()` pattern to resolve the selected category by `categoryId`.
-  - [ ] Reuse the supplier detail context from Story 2.3 where available; if direct refresh loses supplier data, fetch through the confirmed `suppliersApi.getSupplier()` from Story 2.3.
-  - [ ] Do not expose `quoteFormSchema`, raw ids, slugs, or backend field names as primary visible copy.
-  - [ ] Handle category missing/not-found, inactive category, malformed schema, unauthorized/access-denied, network, timeout, and server failures as localized recoverable states.
+- [x] Add category/schema loading for the RFQ form context. (AC: 1-4)
+  - [x] Reuse the existing `categoriesApi.listCategories()` boundary and `useCategoriesQuery()` pattern to resolve the selected category by `categoryId`.
+  - [x] Reuse the supplier detail context from Story 2.3 where available; if direct refresh loses supplier data, fetch through the confirmed `suppliersApi.getSupplier()` from Story 2.3.
+  - [x] Do not expose `quoteFormSchema`, raw ids, slugs, or backend field names as primary visible copy.
+  - [x] Handle category missing/not-found, inactive category, malformed schema, unauthorized/access-denied, network, timeout, and server failures as localized recoverable states.
 
-- [ ] Add dynamic schema normalization as a domain boundary. (AC: 2-4, 7)
-  - [ ] Add a module such as `src/domain/requests/quoteFormSchema.ts` to convert backend `QuoteFormSchemaDto`/`CategoryDto.quoteFormSchema` into app-owned field descriptors.
-  - [ ] Suggested descriptor fields: stable `id`, user-safe `label`, optional `helper`, `type`, `required`, `defaultValue`, `options`, validation constraints, source path for API attribute mapping, and localized error keys.
-  - [ ] Supported descriptor types: `text`, `number`, `date`, `select`, `multiSelect`, `boolean`, `segmented`, and `attachmentPlaceholder`.
-  - [ ] Unsupported or malformed field entries must normalize to either an `unsupported` descriptor or a schema-level localized failure; they must never throw during render.
-  - [ ] Preserve the raw schema only inside tests/debug-safe data structures. Do not log PII, user-entered RFQ text, supplier contact data, or raw request attributes.
-  - [ ] Add focused tests for valid schemas, empty schemas, unsupported types, malformed schema objects, missing labels/options, required flags, default values, and validation metadata.
+- [x] Add dynamic schema normalization as a domain boundary. (AC: 2-4, 7)
+  - [x] Add a module such as `src/domain/requests/quoteFormSchema.ts` to convert backend `QuoteFormSchemaDto`/`CategoryDto.quoteFormSchema` into app-owned field descriptors.
+  - [x] Suggested descriptor fields: stable `id`, user-safe `label`, optional `helper`, `type`, `required`, `defaultValue`, `options`, validation constraints, source path for API attribute mapping, and localized error keys.
+  - [x] Supported descriptor types: `text`, `number`, `date`, `select`, `multiSelect`, `boolean`, `segmented`, and `attachmentPlaceholder`.
+  - [x] Unsupported or malformed field entries must normalize to either an `unsupported` descriptor or a schema-level localized failure; they must never throw during render.
+  - [x] Preserve the raw schema only inside tests/debug-safe data structures. Do not log PII, user-entered RFQ text, supplier contact data, or raw request attributes.
+  - [x] Add focused tests for valid schemas, empty schemas, unsupported types, malformed schema objects, missing labels/options, required flags, default values, and validation metadata.
 
-- [ ] Introduce the guided RFQ form screen without submitting to the backend. (AC: 1, 5, 6)
-  - [ ] Add an RFQ creation screen under `src/features/funeral-home/quotes`, for example `RfqFormScreen.tsx`.
-  - [ ] Add a thin Expo Router file only after the route contract is confirmed, for example `src/app/(funeral-home)/funeral-home/quotes/new.tsx`.
-  - [ ] Capture universal fields: subject, message, deadline, attachments placeholder, quantity where applicable, supplier context, and category context.
-  - [ ] Store category-specific answers in an `attributes` object shaped for `CreateQuoteRequestInputDto.attributes`, but do not call `quoteRequestsApi.createQuoteRequest()` in this story.
-  - [ ] Provide a "continue to review" handoff only as a controlled placeholder or disabled/protected route until Story 2.5 implements review and send.
-  - [ ] Use request language such as `Angebot anfragen` / `Anfrage vorbereiten`; avoid checkout, cart, order, purchase, payment, booking, chat, or consumer-shopping language.
+- [x] Introduce the guided RFQ form screen without submitting to the backend. (AC: 1, 5, 6)
+  - [x] Add an RFQ creation screen under `src/features/funeral-home/quotes`, for example `RfqFormScreen.tsx`.
+  - [x] Add a thin Expo Router file only after the route contract is confirmed, for example `src/app/(funeral-home)/funeral-home/quotes/new.tsx`.
+  - [x] Capture universal fields: subject, message, deadline, attachments placeholder, quantity where applicable, supplier context, and category context.
+  - [x] Store category-specific answers in an `attributes` object shaped for `CreateQuoteRequestInputDto.attributes`, but do not call `quoteRequestsApi.createQuoteRequest()` in this story.
+  - [x] Provide a "continue to review" handoff only as a controlled placeholder or disabled/protected route until Story 2.5 implements review and send.
+  - [x] Use request language such as `Angebot anfragen` / `Anfrage vorbereiten`; avoid checkout, cart, order, purchase, payment, booking, chat, or consumer-shopping language.
 
-- [ ] Use React Hook Form for form state if it has not already been added. (AC: 5-7)
-  - [ ] The architecture requires React Hook Form for guided RFQ forms, but `package.json` currently does not include it. Add the dependency only during approved implementation and commit the lockfile.
-  - [ ] Keep validation behavior app-owned and testable. Zod is already installed and should continue to guard API/form boundaries where useful.
-  - [ ] Preserve user-entered data across validation failures, step changes, schema-render fallback states, and route param refresh where safe.
-  - [ ] Do not persist draft RFQs to MMKV in this story unless explicitly approved; draft persistence is not defined in the current acceptance criteria.
+- [x] Use React Hook Form for form state if it has not already been added. (AC: 5-7)
+  - [x] The architecture requires React Hook Form for guided RFQ forms, but `package.json` currently does not include it. Add the dependency only during approved implementation and commit the lockfile.
+  - [x] Keep validation behavior app-owned and testable. Zod is already installed and should continue to guard API/form boundaries where useful.
+  - [x] Preserve user-entered data across validation failures, step changes, schema-render fallback states, and route param refresh where safe.
+  - [x] Do not persist draft RFQs to MMKV in this story unless explicitly approved; draft persistence is not defined in the current acceptance criteria.
 
-- [ ] Build reusable form components close to the RFQ feature. (AC: 2, 4-7)
-  - [ ] Add a `DynamicSchemaField` component under `src/features/funeral-home/quotes/components` or `src/features/requests/components` only if clear reuse with supplier quote-response forms exists.
-  - [ ] Compose existing Ignite/project primitives first: `Screen`, `Text`, `TextField`, `Button`, `Card`, `Checkbox`, `Switch`, `Radio`, `Icon`, and theme tokens.
-  - [ ] Add small local controls for segmented options, select, and multi-select only if existing primitives are insufficient; do not add a third-party UI kit.
-  - [ ] Attachment handling is placeholder-only. Render a disabled or explanatory upload placeholder until the backend upload contract is confirmed.
-  - [ ] Every input must expose localized labels, helper text where needed, required state, validation error text, and accessibility labels.
+- [x] Build reusable form components close to the RFQ feature. (AC: 2, 4-7)
+  - [x] Add a `DynamicSchemaField` component under `src/features/funeral-home/quotes/components` or `src/features/requests/components` only if clear reuse with supplier quote-response forms exists.
+  - [x] Compose existing Ignite/project primitives first: `Screen`, `Text`, `TextField`, `Button`, `Card`, `Checkbox`, `Switch`, `Radio`, `Icon`, and theme tokens.
+  - [x] Add small local controls for segmented options, select, and multi-select only if existing primitives are insufficient; do not add a third-party UI kit.
+  - [x] Attachment handling is placeholder-only. Render a disabled or explanatory upload placeholder until the backend upload contract is confirmed.
+  - [x] Every input must expose localized labels, helper text where needed, required state, validation error text, and accessibility labels.
 
-- [ ] Add German-first and English localization for every visible string. (AC: 1-7)
-  - [ ] Add `funeralHome.rfq.*` or `requests.rfq.*` keys for route title, context summary, universal fields, dynamic-field labels/fallbacks, unsupported-field messages, validation errors, loading/error/empty states, attachment placeholder, continue/review placeholder, and accessibility labels.
-  - [ ] Keep German copy calm, operational, and compact enough for small phones.
-  - [ ] Update non-primary locale forwarding only if TypeScript translation shape requires it.
+- [x] Add German-first and English localization for every visible string. (AC: 1-7)
+  - [x] Add `funeralHome.rfq.*` or `requests.rfq.*` keys for route title, context summary, universal fields, dynamic-field labels/fallbacks, unsupported-field messages, validation errors, loading/error/empty states, attachment placeholder, continue/review placeholder, and accessibility labels.
+  - [x] Keep German copy calm, operational, and compact enough for small phones.
+  - [x] Update non-primary locale forwarding only if TypeScript translation shape requires it.
 
-- [ ] Add focused tests and implementation quality gates. (AC: 1-7)
-  - [ ] Add schema-normalizer unit tests.
-  - [ ] Add dynamic field component tests for every supported descriptor type and unsupported fallback.
-  - [ ] Add RFQ form screen tests for context loading, universal fields, dynamic fields, required validation, preserved state, malformed schema, missing category/supplier context, network/API failures, keyboard-safe action area assumptions, and handoff to the Story 2.5 placeholder/review route.
-  - [ ] Run focused tests, `pnpm compile`, `pnpm test --runInBand`, `pnpm lint:check`, `pnpm depcruise`, and `git diff --check` when implementation is approved.
-  - [ ] Use Argent simulator/emulator verification during implementation because this story affects runtime behavior, navigation, screens, form input, API-derived schema behavior, and visible UI.
+- [x] Add focused tests and implementation quality gates. (AC: 1-7)
+  - [x] Add schema-normalizer unit tests.
+  - [x] Add dynamic field component tests for every supported descriptor type and unsupported fallback.
+  - [x] Add RFQ form screen tests for context loading, universal fields, dynamic fields, required validation, preserved state, malformed schema, missing category/supplier context, network/API failures, keyboard-safe action area assumptions, and handoff to the Story 2.5 placeholder/review route.
+  - [x] Run focused tests, `pnpm compile`, `pnpm test --runInBand`, `pnpm lint:check`, `pnpm depcruise`, and `git diff --check` when implementation is approved.
+  - [x] Use Argent simulator/emulator verification during implementation because this story affects runtime behavior, navigation, screens, form input, API-derived schema behavior, and visible UI.
+
+### Review Findings
+
+- [x] [Review][Patch] Missing-context recovery action renders a dead button [src/features/funeral-home/quotes/RfqFormScreen.tsx:70]
+- [x] [Review][Patch] Supplier detail can start RFQ without a resolved category id [src/features/funeral-home/discovery/SupplierDetailScreen.tsx:91]
+- [x] [Review][Patch] JSON Schema enum fields with `type: "string"` render as free text [src/domain/requests/quoteFormSchema.ts:233]
+- [x] [Review][Patch] Malformed primitive field entries are silently dropped [src/domain/requests/quoteFormSchema.ts:104]
+- [x] [Review][Patch] Dynamic validation metadata is normalized but not enforced [src/features/funeral-home/quotes/components/DynamicSchemaField.tsx:62]
+- [x] [Review][Patch] Required unsupported schema fields can be bypassed [src/features/funeral-home/quotes/components/DynamicSchemaField.tsx:35]
+- [x] [Review][Patch] Dynamic localized labels always prefer German [src/domain/requests/quoteFormSchema.ts:309]
+- [x] [Review][Patch] Scroll-to-error/focus behavior is not implemented [src/features/funeral-home/quotes/RfqFormScreen.tsx:220]
 
 ## Dev Notes
 
@@ -270,3 +281,57 @@ android/**
 - [Source: `src/services/query/QueryProvider.tsx`, `src/services/query/queryKeys.ts` - query provider/session-scope behavior and centralized key pattern]
 - [Source: `src/domain/account/accountAccess.ts` - current fail-closed account/role behavior]
 - [Source: `src/i18n/de.ts`, `src/i18n/en.ts`, `src/components/TextField.tsx`, `src/components/Button.tsx`, `src/components/Toggle/*`, `src/theme/colors.ts`, `src/theme/spacing.ts` - localization, form primitives, and theme patterns]
+
+## Dev Agent Record
+
+### Implementation Plan
+
+- Confirmed Story 2.3 RFQ handoff and converted the Quotes tab route into a folder route with `/funeral-home/quotes/new`.
+- Added an app-owned schema normalization boundary before rendering any backend-provided field definitions.
+- Built the guided RFQ form with React Hook Form, existing project primitives, localized copy, guarded context loading, inline validation, and a Story 2.5 review placeholder.
+- Covered schema normalization, query context mapping, dynamic field rendering, screen behavior, route tab hiding, and supplier-detail RFQ navigation with focused tests before running full validation.
+
+### Debug Log
+
+- 2026-05-26: Added `react-hook-form` dependency and lockfile update because the story explicitly requires React Hook Form for guided RFQ forms.
+- 2026-05-26: Initial folder-route conversion exposed `quotes/new` and `quotes/index` as duplicate bottom tabs in Argent; fixed by configuring the tab as `quotes/index` and hiding `quotes/new`.
+- 2026-05-26: Updated `_bmad-output/implementation-artifacts/backend-gaps.md` with implemented Story 2.4 workarounds and verification limits for schema shape, attachments, and quantity.
+
+### Completion Notes
+
+- Implemented `/funeral-home/quotes/new?supplierId=...&categoryId=...` with protected-route ownership preserved in the existing funeral-home layout.
+- Added RFQ context loading through `categoriesApi.listCategories()` and `suppliersApi.getSupplier()`, with localized safe states for missing context, missing/inactive category, inactive supplier, context mismatch, malformed schema, and normalized API failures.
+- Added `quoteFormSchema` normalization into app-owned descriptors for text, number, date, select, multi-select, boolean, segmented, attachment placeholder, and unsupported fields.
+- Added a German-first RFQ form screen that captures subject, message, deadline, optional quantity, supplier/category context, dynamic attributes, attachment placeholder copy, inline validation, preserved form state, and a non-submitting review placeholder.
+- Argent verified the active supplier-detail CTA into the RFQ form, context preservation, universal field entry, dynamic field entry, validation persistence, review placeholder, missing-context recovery, fixed tab shape, and German copy without checkout/order/payment/cart/chat language. Live backend data did not include unsupported or malformed schema fields, so those states are verified by focused tests and documented as backend-contract-limited.
+
+### File List
+
+- `_bmad-output/implementation-artifacts/2-4-dynamic-rfq-form-renderer.md`
+- `_bmad-output/implementation-artifacts/backend-gaps.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `package.json`
+- `pnpm-lock.yaml`
+- `src/app/(funeral-home)/funeral-home/quotes.tsx` (deleted)
+- `src/app/(funeral-home)/funeral-home/quotes/index.tsx`
+- `src/app/(funeral-home)/funeral-home/quotes/new.tsx`
+- `src/domain/requests/quoteFormSchema.test.ts`
+- `src/domain/requests/quoteFormSchema.ts`
+- `src/features/funeral-home/discovery/SupplierDetailScreen.test.tsx`
+- `src/features/funeral-home/discovery/SupplierDetailScreen.tsx`
+- `src/features/funeral-home/quotes/RfqFormScreen.test.tsx`
+- `src/features/funeral-home/quotes/RfqFormScreen.tsx`
+- `src/features/funeral-home/quotes/components/DynamicSchemaField.test.tsx`
+- `src/features/funeral-home/quotes/components/DynamicSchemaField.tsx`
+- `src/features/funeral-home/quotes/hooks/useRfqFormContextQuery.test.tsx`
+- `src/features/funeral-home/quotes/hooks/useRfqFormContextQuery.ts`
+- `src/i18n/de.ts`
+- `src/i18n/en.ts`
+- `src/navigation/RoleTabs.tsx`
+- `src/navigation/roleTabs.test.tsx`
+- `src/services/query/queryKeys.test.ts`
+- `src/services/query/queryKeys.ts`
+
+### Change Log
+
+- 2026-05-26: Implemented Story 2.4 dynamic RFQ form renderer, route, schema normalization, localized form UI, tests, and Argent verification; moved story to review.

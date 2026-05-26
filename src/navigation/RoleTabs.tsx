@@ -35,7 +35,7 @@ const funeralHomeTabs: RoleTabConfig[] = [
     Icon: Compass,
   },
   {
-    name: "quotes",
+    name: "quotes/index",
     titleTx: "funeralHome:tabs.quotes",
     accessibilityLabelTx: "funeralHome:tabAccessibility.quotes",
     Icon: FileText,
@@ -88,14 +88,20 @@ const supplierTabs: RoleTabConfig[] = [
 ]
 
 export function FuneralHomeTabs() {
-  return <RoleTabs tabs={funeralHomeTabs} />
+  return <RoleTabs hiddenScreens={["quotes/new", "quotes/[requestId]"]} tabs={funeralHomeTabs} />
 }
 
 export function SupplierTabs() {
   return <RoleTabs tabs={supplierTabs} />
 }
 
-function RoleTabs({ tabs }: { tabs: RoleTabConfig[] }) {
+function RoleTabs({
+  hiddenScreens = [],
+  tabs,
+}: {
+  hiddenScreens?: string[]
+  tabs: RoleTabConfig[]
+}) {
   const { t } = useTranslation()
   const { theme } = useAppTheme()
 
@@ -125,6 +131,15 @@ function RoleTabs({ tabs }: { tabs: RoleTabConfig[] }) {
         },
       }}
     >
+      {hiddenScreens.map((screen) => (
+        <Tabs.Screen
+          key={screen}
+          name={screen}
+          options={{
+            href: null,
+          }}
+        />
+      ))}
       {tabs.map((tab) => {
         const TabIcon = tab.Icon
 

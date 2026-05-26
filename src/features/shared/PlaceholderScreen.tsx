@@ -1,10 +1,13 @@
 import { ReactNode } from "react"
 import { TextStyle, View, ViewStyle } from "react-native"
+import type { Href } from "expo-router"
 
+import { BackHeader } from "@/components/BackHeader"
 import { Button } from "@/components/Button"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { TxKeyPath } from "@/i18n"
+import { translate } from "@/i18n/translate"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 
@@ -21,19 +24,43 @@ interface PlaceholderScreenProps {
   bodyTx: TxKeyPath
   statusTx?: TxKeyPath
   actions?: PlaceholderAction[]
+  backAccessibilityLabelTx?: TxKeyPath
+  backFallbackHref?: Href
   children?: ReactNode
+  onBackPress?: () => void
+  showBack?: boolean
 }
 
 export function PlaceholderScreen(props: PlaceholderScreenProps) {
-  const { actions = [], bodyTx, children, eyebrowTx, statusTx, titleTx } = props
+  const {
+    actions = [],
+    backAccessibilityLabelTx,
+    backFallbackHref,
+    bodyTx,
+    children,
+    eyebrowTx,
+    onBackPress,
+    showBack,
+    statusTx,
+    titleTx,
+  } = props
   const { themed } = useAppTheme()
 
   return (
     <Screen
       preset="auto"
       safeAreaEdges={["top", "bottom"]}
-      contentContainerStyle={themed($content)}
+      contentContainerStyle={themed(showBack ? $contentWithBack : $content)}
     >
+      {showBack ? (
+        <BackHeader
+          accessibilityLabel={
+            backAccessibilityLabelTx ? translate(backAccessibilityLabelTx) : undefined
+          }
+          fallbackHref={backFallbackHref}
+          onPress={onBackPress}
+        />
+      ) : null}
       <View style={themed($panel)}>
         {!!eyebrowTx && <Text tx={eyebrowTx} preset="formLabel" style={themed($eyebrow)} />}
         <Text tx={titleTx} preset="heading" style={themed($title)} />
@@ -67,6 +94,12 @@ export function PlaceholderScreen(props: PlaceholderScreenProps) {
 const $content: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexGrow: 1,
   justifyContent: "center",
+  padding: spacing.lg,
+})
+
+const $contentWithBack: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flexGrow: 1,
+  gap: spacing.sm,
   padding: spacing.lg,
 })
 

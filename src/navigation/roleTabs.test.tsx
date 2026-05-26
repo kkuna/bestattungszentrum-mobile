@@ -53,10 +53,13 @@ jest.mock("expo-router", () => {
 
   function Screen({ name, options }: { name: string; options: any }) {
     return (
-      <Text
-        testID={`tab-${name}`}
-        accessibilityLabel={options.tabBarAccessibilityLabel}
-      >{`${options.title}|${options.tabBarLabel}`}</Text>
+      <View>
+        <Text
+          testID={`tab-${name}`}
+          accessibilityLabel={options.tabBarAccessibilityLabel}
+        >{`${options.title}|${options.tabBarLabel}`}</Text>
+        <Text testID={`tab-${name}-href`}>{String(options.href)}</Text>
+      </View>
     )
   }
 
@@ -84,7 +87,11 @@ describe("role tab layouts", () => {
     expect(screen.getByTestId("tab-discover").props.children).toContain(
       de.funeralHome.tabs.discover,
     )
-    expect(screen.getByTestId("tab-quotes").props.children).toContain(de.funeralHome.tabs.quotes)
+    expect(screen.getByTestId("tab-quotes/index").props.children).toContain(
+      de.funeralHome.tabs.quotes,
+    )
+    expect(screen.getByTestId("tab-quotes/new-href").props.children).toBe("null")
+    expect(screen.getByTestId("tab-quotes/[requestId]-href").props.children).toBe("null")
     expect(screen.getByTestId("tab-profile").props.children).toContain(de.shared.tabs.profile)
     expect(screen.getByTestId("tab-settings").props.children).toContain(de.shared.tabs.settings)
     expect(screen.getByLabelText(de.funeralHome.tabAccessibility.discover)).toBeTruthy()

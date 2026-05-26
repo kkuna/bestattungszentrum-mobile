@@ -14,6 +14,7 @@ import { useCategoriesQuery } from "../hooks/useCategoriesQuery"
 
 const mockRouterPush = jest.fn()
 const mockRouterBack = jest.fn()
+const mockRouterCanGoBack = jest.fn()
 const mockRouterReplace = jest.fn()
 const mockRefetch = jest.fn()
 
@@ -44,6 +45,7 @@ jest.mock("react-native-safe-area-context", () =>
 jest.mock("expo-router", () => ({
   router: {
     back: (...args: unknown[]) => mockRouterBack(...args),
+    canGoBack: (...args: unknown[]) => mockRouterCanGoBack(...args),
     push: (...args: unknown[]) => mockRouterPush(...args),
     replace: (...args: unknown[]) => mockRouterReplace(...args),
   },
@@ -196,6 +198,7 @@ describe("SupplierDetailScreen", () => {
   beforeEach(() => {
     jest.clearAllMocks()
     i18n.language = "de"
+    mockRouterCanGoBack.mockReturnValue(true)
     mockSession()
     mockCategories()
     mockSupplierDetail({ data: supplier })
@@ -216,9 +219,17 @@ describe("SupplierDetailScreen", () => {
 
     fireEvent.press(screen.getByText(de.funeralHome.discover.detail.requestAction))
     expect(mockRouterPush).toHaveBeenCalledWith({
-      pathname: "/funeral-home/quotes",
-      params: { categoryId: "cat-flowers", entry: "new", supplierId: "supplier-1" },
+      pathname: "/funeral-home/quotes/new",
+      params: { categoryId: "cat-flowers", supplierId: "supplier-1" },
     })
+  })
+
+  test("uses the header back action when history is available", () => {
+    const screen = renderDetail()
+
+    fireEvent.press(screen.getByLabelText(de.common.back))
+
+    expect(mockRouterBack).toHaveBeenCalledTimes(1)
   })
 
   test("falls back to the supplier category when a deep link carries unrelated category context", () => {
@@ -227,9 +238,19 @@ describe("SupplierDetailScreen", () => {
     fireEvent.press(screen.getByText(de.funeralHome.discover.detail.requestAction))
 
     expect(mockRouterPush).toHaveBeenCalledWith({
-      pathname: "/funeral-home/quotes",
-      params: { categoryId: "cat-flowers", entry: "new", supplierId: "supplier-1" },
+      pathname: "/funeral-home/quotes/new",
+      params: { categoryId: "cat-flowers", supplierId: "supplier-1" },
     })
+  })
+
+  test("blocks RFQ entry when the supplier has no resolvable category", () => {
+    mockSupplierDetail({ data: { ...supplier, categoryIds: [] } })
+
+    const screen = renderDetail({ categoryId: undefined })
+
+    expect(screen.getByText(de.funeralHome.discover.detail.blockedCategoryTitle)).toBeTruthy()
+    fireEvent.press(screen.getByText(de.funeralHome.discover.detail.requestBlockedAction))
+    expect(mockRouterPush).not.toHaveBeenCalled()
   })
 
   test("renders calm fallback copy for missing optional public fields", () => {

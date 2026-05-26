@@ -1,4 +1,9 @@
-import { formatDate, loadDateFnsLocale, resolveDateFnsLocaleName } from "@/utils/formatDate"
+import {
+  formatDate,
+  formatDateOnly,
+  loadDateFnsLocale,
+  resolveDateFnsLocaleName,
+} from "@/utils/formatDate"
 
 import de from "./de"
 import en from "./en"
@@ -57,5 +62,7 @@ describe("German-first locale selection", () => {
     loadDateFnsLocale()
 
     expect(formatDate("2026-05-24", "MMMM dd, yyyy")).toBe("Mai 24, 2026")
+    expect(formatDateOnly("2026-06-10", "dd. MMM yyyy")).toBe("10. Juni 2026")
+    expect(() => formatDateOnly("2026-02-31", "dd. MMM yyyy")).toThrow("Invalid date-only value")
   })
 })

@@ -1,4 +1,9 @@
+import { router } from "expo-router"
+
 import { PlaceholderScreen } from "@/features/shared/PlaceholderScreen"
+import { useSession } from "@/services/session"
+
+import { getSettingsRouteForSession } from "./settingsNavigation"
 
 type SettingsPlaceholderKind = "notifications" | "offline" | "empty" | "error"
 
@@ -32,5 +37,16 @@ const placeholderCopy: Record<SettingsPlaceholderKind, Parameters<typeof Placeho
 }
 
 export function SettingsPlaceholderScreen({ kind }: { kind: SettingsPlaceholderKind }) {
-  return <PlaceholderScreen {...placeholderCopy[kind]} />
+  const { session } = useSession()
+
+  return (
+    <PlaceholderScreen
+      {...placeholderCopy[kind]}
+      showBack
+      backAccessibilityLabelTx="shared:settings.language.backAccessibilityLabel"
+      onBackPress={() => {
+        router.replace(getSettingsRouteForSession(session))
+      }}
+    />
+  )
 }

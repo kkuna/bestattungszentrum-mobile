@@ -54,6 +54,7 @@
     "lucide-react-native": "^1.16.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
+    "react-hook-form": "^7.76.1",
     "react-i18next": "^15.0.1",
     "react-native": "0.83.6",
     "react-native-drawer-layout": "^4.0.1",

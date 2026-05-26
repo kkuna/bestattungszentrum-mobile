@@ -19,6 +19,6 @@ export const timelineApi = {
     const response = await client.apisauce.get(
       `/api/mobile/quote-requests/${encodeURIComponent(validatedQuoteRequestId.data)}/timeline`,
     )
-    return normalizeApiResponse(response, timelineSchema, { forbiddenMeansAuth: true })
+    return normalizeApiResponse(response, timelineSchema)
   },
 }

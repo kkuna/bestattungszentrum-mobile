@@ -4,6 +4,10 @@ const recordSchema = z.record(z.string(), z.unknown())
 const optionalNullableString = z.string().nullable().optional()
 const nonEmptyString = z.string().trim().min(1)
 const isoDateTimeString = z.string().datetime({ offset: true })
+const dateOnlyString = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/)
+  .refine(isValidDateOnly)
 const positiveAmount = z.number().finite().positive()
 
 export const userRoleSchema = z.enum([
@@ -14,6 +18,7 @@ export const userRoleSchema = z.enum([
   "SUPPORT",
   "OPERATOR",
 ])
+const timelineActorRoleSchema = z.union([userRoleSchema, z.literal("SYSTEM")])
 
 export const userStatusSchema = z.enum(["PENDING", "ACTIVE", "SUSPENDED"])
 export const accountStatusSchema = z.enum([
@@ -159,6 +164,19 @@ export const documentAssetSchema = z.object({
   createdAt: z.string(),
 })
 
+export const emailDispatchSchema = z.object({
+  id: z.string().optional(),
+  relatedEntityType: z.string().optional(),
+  relatedEntityId: z.string().optional(),
+  toAddress: z.string().email().optional(),
+  templateId: z.string().optional(),
+  providerMessageId: z.string().nullable().optional(),
+  status: emailDispatchStatusSchema,
+  sentAt: z.string().nullable().optional(),
+  deliveredAt: z.string().nullable().optional(),
+  lastEventAt: z.string().nullable().optional(),
+})
+
 export const quoteRequestSchema = z.object({
   id: z.string(),
   funeralHomeId: z.string(),
@@ -171,6 +189,7 @@ export const quoteRequestSchema = z.object({
   attachments: z.array(documentAssetSchema),
   status: quoteRequestStatusSchema,
   createdAt: z.string(),
+  emailDispatch: emailDispatchSchema.nullable().optional(),
   sentAt: z.string().nullable(),
   respondedAt: z.string().nullable(),
 })
@@ -198,22 +217,9 @@ export const requestTimelineEventSchema = z.object({
   description: z.string(),
   occurredAt: z.string(),
   status: z.enum(["DONE", "PENDING", "FAILED"]),
-  actorRole: userRoleSchema,
+  actorRole: timelineActorRoleSchema,
   relatedEntityType: z.string(),
   relatedEntityId: z.string(),
-})
-
-export const emailDispatchSchema = z.object({
-  id: z.string(),
-  relatedEntityType: z.string(),
-  relatedEntityId: z.string(),
-  toAddress: z.string().email(),
-  templateId: z.string(),
-  providerMessageId: z.string().nullable(),
-  status: emailDispatchStatusSchema,
-  sentAt: z.string().nullable(),
-  deliveredAt: z.string().nullable(),
-  lastEventAt: z.string().nullable(),
 })
 
 export const funeralHomeSignupInputSchema = z.object({
@@ -244,10 +250,25 @@ export const createQuoteRequestInputSchema = z.object({
   categoryId: nonEmptyString,
   subject: nonEmptyString,
   message: nonEmptyString,
-  deadline: isoDateTimeString,
+  deadline: dateOnlyString,
   attributes: recordSchema.default({}),
   attachments: z.array(attachmentInputSchema).default([]),
 })
+
+function isValidDateOnly(value: string) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value)
+  if (!match) return false
+
+  const [, yearText, monthText, dayText] = match
+  const year = Number(yearText)
+  const month = Number(monthText)
+  const day = Number(dayText)
+  const date = new Date(Date.UTC(year, month - 1, day))
+
+  return (
+    date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day
+  )
+}
 
 export const createQuoteResponseInputSchema = z
   .object({

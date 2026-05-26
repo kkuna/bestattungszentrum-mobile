@@ -20,6 +20,42 @@ describe("query service foundation", () => {
     expect(queryKeys.suppliers.detail("   ")).toEqual(["suppliers", "detail", null])
   })
 
+  test("keeps RFQ form context query keys centralized and distinct", () => {
+    expect(queryKeys.rfq.formContext(" supplier-1 ", " category-1 ")).toEqual([
+      "rfq",
+      "formContext",
+      { categoryId: "category-1", supplierId: "supplier-1" },
+    ])
+    expect(queryKeys.rfq.formContext(undefined, " ")).toEqual([
+      "rfq",
+      "formContext",
+      { categoryId: null, supplierId: null },
+    ])
+  })
+
+  test("keeps request list query keys centralized", () => {
+    expect(queryKeys.requests.funeralHomeList()).toEqual(["requests", "funeralHome", "list"])
+    expect(queryKeys.requests.funeralHomeDetail(" request/123 ")).toEqual([
+      "requests",
+      "funeralHome",
+      "detail",
+      "request/123",
+    ])
+    expect(queryKeys.requests.funeralHomeDetail("   ")).toEqual([
+      "requests",
+      "funeralHome",
+      "detail",
+      null,
+    ])
+    expect(queryKeys.requests.timeline(" request/123 ")).toEqual([
+      "requests",
+      "timeline",
+      "request/123",
+    ])
+    expect(queryKeys.requests.timeline(undefined)).toEqual(["requests", "timeline", null])
+    expect(queryKeys.requests.supplierList()).toEqual(["requests", "supplier", "list"])
+  })
+
   test("creates mobile-conservative query clients", () => {
     const client = createQueryClient()
     const defaults = client.getDefaultOptions()

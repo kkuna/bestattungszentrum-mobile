@@ -3,6 +3,7 @@ import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
 import { router } from "expo-router"
 import i18n from "i18next"
 
+import { BackHeader } from "@/components/BackHeader"
 import { Button } from "@/components/Button"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
@@ -88,15 +89,15 @@ export function SupplierDetailScreen({ categoryId, supplierId }: SupplierDetailS
   const categoryLabels = getCategoryLabels(loadedSupplier, categories)
   const isSupplierRequestable = loadedSupplier.accountStatus === "ACTIVE"
   const isAccountRequestable = accountAccess?.status === "active"
-  const canRequest = isSupplierRequestable && isAccountRequestable
+  const hasRequestCategory = !!resolvedCategoryId
+  const canRequest = isSupplierRequestable && isAccountRequestable && hasRequestCategory
 
   function startRfq() {
     if (!canRequest) return
 
     router.push({
-      pathname: "/funeral-home/quotes",
+      pathname: "/funeral-home/quotes/new",
       params: {
-        entry: "new",
         supplierId: loadedSupplier.id,
         ...(resolvedCategoryId ? { categoryId: resolvedCategoryId } : {}),
       },
@@ -109,6 +110,7 @@ export function SupplierDetailScreen({ categoryId, supplierId }: SupplierDetailS
       safeAreaEdges={["top", "bottom"]}
       contentContainerStyle={themed($content)}
     >
+      <BackHeader fallbackHref="/funeral-home/discover" />
       <SupplierHero supplier={loadedSupplier} categoryLabels={categoryLabels} />
 
       <View style={themed($section)}>
@@ -179,7 +181,9 @@ export function SupplierDetailScreen({ categoryId, supplierId }: SupplierDetailS
             tx={
               !isSupplierRequestable
                 ? "funeralHome:discover.detail.blockedSupplierTitle"
-                : "funeralHome:discover.detail.blockedAccountTitle"
+                : !isAccountRequestable
+                  ? "funeralHome:discover.detail.blockedAccountTitle"
+                  : "funeralHome:discover.detail.blockedCategoryTitle"
             }
             preset="formLabel"
           />
@@ -187,7 +191,9 @@ export function SupplierDetailScreen({ categoryId, supplierId }: SupplierDetailS
             tx={
               !isSupplierRequestable
                 ? "funeralHome:discover.detail.blockedSupplierBody"
-                : "funeralHome:discover.detail.blockedAccountBody"
+                : !isAccountRequestable
+                  ? "funeralHome:discover.detail.blockedAccountBody"
+                  : "funeralHome:discover.detail.blockedCategoryBody"
             }
             style={themed($mutedText)}
           />
@@ -207,11 +213,6 @@ export function SupplierDetailScreen({ categoryId, supplierId }: SupplierDetailS
           preset={canRequest ? "filled" : "default"}
           disabledStyle={themed($disabledButton)}
           disabledTextStyle={themed($disabledButtonText)}
-        />
-        <Button
-          tx="funeralHome:discover.detail.backToDiscoverAction"
-          onPress={() => router.replace("/funeral-home/discover")}
-          preset="default"
         />
       </View>
     </Screen>
@@ -239,6 +240,7 @@ function DetailState({
       safeAreaEdges={["top", "bottom"]}
       contentContainerStyle={themed($stateContent)}
     >
+      <BackHeader fallbackHref="/funeral-home/discover" />
       <View style={themed($section)}>
         <Text tx={titleTx} preset="subheading" />
         <Text tx={bodyTx} style={themed($mutedText)} />
@@ -388,7 +390,7 @@ const $content: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 
 const $stateContent: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexGrow: 1,
-  justifyContent: "center",
+  gap: spacing.sm,
   padding: spacing.lg,
 })
 
