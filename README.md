@@ -1,77 +1,190 @@
-# Welcome to your new ignited app!
+# Bestattungszentrum Mobile
 
-> The latest and greatest boilerplate for Infinite Red opinions
+React Native mobile app built with Expo, Expo Router, TypeScript, TanStack Query, i18next, MMKV, and a development client.
 
-This is the boilerplate that [Infinite Red](https://infinite.red) uses as a way to test bleeding-edge changes to our React Native stack.
+## Requirements
 
-- [Quick start documentation](https://github.com/infinitered/ignite/blob/master/docs/boilerplate/Boilerplate.md)
-- [Full documentation](https://github.com/infinitered/ignite/blob/master/docs/README.md)
+- Node.js 20 or newer
+- pnpm
+- Xcode and iOS Simulator for iOS development
+- CocoaPods for native iOS dependency installs
+- Android Studio and an emulator for Android development
+- Local backend running on `http://localhost:3000` for protected app flows
 
-## Getting Started
+Enable package-manager shims if needed:
+
+```bash
+corepack enable
+```
+
+Install dependencies:
 
 ```bash
 pnpm install
-pnpm run start
 ```
 
-To make things work on your local simulator, or on your phone, you need first to [run `eas build`](https://github.com/infinitered/ignite/blob/master/docs/expo/EAS.md). We have many shortcuts on `package.json` to make it easier:
+## Backend
+
+Development config uses `src/config/config.dev.ts`, which points the app at:
+
+```text
+http://localhost:3000
+```
+
+For full protected-flow verification, run the sibling backend before starting the app:
 
 ```bash
-pnpm run build:ios:sim # build for ios simulator
-pnpm run build:ios:device # build for ios device
-pnpm run build:ios:prod # build for ios device
+cd ../bestattungszentrum-app
+npm install
+npm run dev
 ```
 
-### `./assets`
+If your backend checkout lives somewhere else, use that path. The mobile app expects the backend to serve the mobile API on port `3000`.
 
-This directory is designed to organize and store various assets, making it easy for you to manage and use them in your application. The assets are further categorized into subdirectories, including `icons` and `images`:
+## Running On iOS
 
-```tree
-assets
-├── icons
-└── images
+Build and install the Expo development client on a simulator:
+
+```bash
+pnpm run ios
 ```
 
-**icons**
-This is where your icon assets will live. These icons can be used for buttons, navigation elements, or any other UI components. The recommended format for icons is PNG, but other formats can be used as well.
+Start Metro for an already installed development client:
 
-Ignite comes with a built-in `Icon` component. You can find detailed usage instructions in the [docs](https://github.com/infinitered/ignite/blob/master/docs/boilerplate/app/components/Icon.md).
-
-**images**
-This is where your images will live, such as background images, logos, or any other graphics. You can use various formats such as PNG, JPEG, or GIF for your images.
-
-Another valuable built-in component within Ignite is the `AutoImage` component. You can find detailed usage instructions in the [docs](https://github.com/infinitered/ignite/blob/master/docs/Components-AutoImage.md).
-
-How to use your `icon` or `image` assets:
-
-```typescript
-import { Image } from 'react-native';
-
-const MyComponent = () => {
-  return (
-    <Image source={require('assets/images/my_image.png')} />
-  );
-};
+```bash
+pnpm start
 ```
 
-## Running Maestro end-to-end tests
+Then open the installed `de.bestattungszentrum` app in the simulator. Metro prints the development-client URL and supports the usual Expo shortcuts.
 
-Follow our [Maestro Setup](https://ignitecookbook.com/docs/recipes/MaestroSetup) recipe.
+Local EAS simulator build:
 
-## Next Steps
+```bash
+pnpm run build:ios:sim
+```
 
-### Ignite Cookbook
+Local EAS device build:
 
-[Ignite Cookbook](https://ignitecookbook.com/) is an easy way for developers to browse and share code snippets (or “recipes”) that actually work.
+```bash
+pnpm run build:ios:device
+```
 
-### Upgrade Ignite boilerplate
+## iOS Recovery Notes
 
-Read our [Upgrade Guide](https://ignitecookbook.com/docs/recipes/UpdatingIgnite) to learn how to upgrade your Ignite project.
+If the iOS dev client redboxes before first render with:
 
-## Community
+```text
+Failed to call into JavaScript module method RCTEventEmitter.receiveEvent().
+Module has not been registered as callable.
+```
 
-⭐️ Help us out by [starring on GitHub](https://github.com/infinitered/ignite), filing bug reports in [issues](https://github.com/infinitered/ignite/issues) or [ask questions](https://github.com/infinitered/ignite/discussions).
+the known local fix is to refresh native iOS build state and rebuild:
 
-💬 Join us on [Slack](https://join.slack.com/t/infiniteredcommunity/shared_invite/zt-1f137np4h-zPTq_CbaRFUOR_glUFs2UA) to discuss.
+```bash
+cd ios
+rm -rf build
+pod deintegrate
+pod install
+cd ..
+pnpm run ios
+```
 
-📰 Make our Editor-in-chief happy by [reading the React Native Newsletter](https://reactnativenewsletter.com/).
+A heavier fallback is a clean Expo prebuild followed by a rebuild:
+
+```bash
+pnpm run prebuild:clean
+pnpm run ios
+```
+
+For simulator networking issues, pin Metro to localhost:
+
+```bash
+EXPO_PACKAGER_PROXY_URL=http://localhost:8081 pnpm exec expo run:ios
+```
+
+or:
+
+```bash
+pnpm exec expo start --localhost --dev-client
+```
+
+The iOS redbox resolution is documented in `_bmad-output/implementation-artifacts/investigations/ios-redbox-resolution.md`.
+
+## Running On Android
+
+Start an Android emulator, then build/install the development app:
+
+```bash
+pnpm run android
+```
+
+For emulator port forwarding:
+
+```bash
+pnpm run adb
+```
+
+Start Metro:
+
+```bash
+pnpm start
+```
+
+Android emulator networking may need `http://10.0.2.2:3000` instead of `http://localhost:3000`; see `src/config/config.dev.ts` if the emulator cannot reach the backend.
+
+## Verification Commands
+
+Run the full local quality gate:
+
+```bash
+pnpm compile
+pnpm test --runInBand
+pnpm lint:check
+pnpm depcruise
+git diff --check
+```
+
+Focused development commands:
+
+```bash
+pnpm test --runInBand path/to/test.test.tsx
+pnpm lint
+pnpm align-deps
+```
+
+UI/runtime changes must also be verified on a simulator or emulator. This project uses Argent for simulator verification in Codex workflows; do not claim simulator verification unless it was actually run.
+
+## Current Feature State
+
+Epic 2 funeral-home request flow is implemented through Story 2.6:
+
+- supplier discovery and supplier detail
+- RFQ form, review, submit receipt
+- outgoing quote request history
+- protected request detail
+- request timeline display
+- document/PDF unavailable handling
+- header-style `ChevronLeft` back navigation on stack/detail screens
+
+Story 2.6 is closed as mobile-complete. Remaining backend/API contract gaps are tracked separately in:
+
+- `_bmad-output/implementation-artifacts/backend-gaps.md`
+- `_bmad-output/implementation-artifacts/deferred-work.md`
+
+Key deferred contracts:
+
+- dedicated mobile request-detail endpoint
+- supplier response detail deep-link contract
+- informational timeline event modeling
+- authenticated or signed quote-request PDF/document open flow
+
+## Useful Paths
+
+- App routes: `src/app`
+- Funeral-home quotes feature: `src/features/funeral-home/quotes`
+- Shared request UI: `src/features/requests`
+- API clients and DTO schemas: `src/services/api`
+- Query keys and providers: `src/services/query`
+- Theme: `src/theme`
+- German/English translations: `src/i18n/de.ts`, `src/i18n/en.ts`
+- BMAD implementation artifacts: `_bmad-output/implementation-artifacts`

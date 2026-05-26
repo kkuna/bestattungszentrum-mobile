@@ -57,7 +57,7 @@ development_status:
   2-3-supplier-detail-and-rfq-entry-points: done
   2-4-dynamic-rfq-form-renderer: done
   2-5-rfq-review-and-send-receipt: done
-  2-6-outgoing-request-history-detail-and-timeline: in-progress
+  2-6-outgoing-request-history-detail-and-timeline: done
   2-7-suspended-funeral-home-read-only-mode: backlog
   2-8-funeral-home-vertical-slice-smoke-flow: backlog
   epic-2-retrospective: optional
